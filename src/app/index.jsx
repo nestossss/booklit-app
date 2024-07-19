@@ -23,9 +23,9 @@ const Home = () => {
                             <Text style={styles.textoBotao}>Fazer Login</Text>
                         </TouchableHighlight>
                     </Link>
-                    <Link style={{marginBottom:"10%"}} href="/autenticacao/login" asChild>
+                    <Link style={{marginBottom:"10%"}} href="/autenticacao/signin" asChild>
                         <TouchableHighlight>
-                            <Text style={styles.textoBotao}>ou <Text style={{color: "#0066dd"}}> Criar uma nova conta</Text> </Text>
+                            <Text style={styles.textoCriarConta}>ou <Text style={{color: "#0066dd"}}> Criar uma nova conta</Text> </Text>
                         </TouchableHighlight>
                     </Link>
                 </View>
@@ -47,6 +47,7 @@ const styles = StyleSheet.create({
         textAlign: "center",
     },
     botaoVerde: {
+        height: 55,
         backgroundColor: 'green',
         padding: 15,
         borderRadius: 15,
@@ -60,6 +61,12 @@ const styles = StyleSheet.create({
         fontSize: 15,
         color: "#fff",
         fontWeight: "600",
+        textAlign: "center",
+    },
+    textoCriarConta: {
+        fontSize: 14,
+        color: "#fff",
+        fontWeight: "400",
         textAlign: "center",
     },
     brandLogo:{},
