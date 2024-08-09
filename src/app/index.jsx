@@ -1,9 +1,23 @@
+import 'react-native-reanimated'
+
 import { StyleSheet, Text, View, TouchableHighlight, Image, ImageBackground} from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { LinearGradient } from 'expo-linear-gradient';
-import { Link } from "expo-router";
+import { Link, Redirect, useFocusEffect } from "expo-router";
+import { useCallback, useContext, useState } from "react";
+import HomeScreen from './main/Home';
+import { UserContext } from '../contexts/UserContext';
 
-const Home = () => {
+const index = () => {
+
+    let [userInfo] = useContext(UserContext);
+
+    useFocusEffect(useCallback( () => {
+        if(userInfo.isLoggedIn){
+            return router.replace("./main/Home");
+        }
+    }, []))
+
 
     return (
         <View style={styles.baseScreen}>
@@ -18,12 +32,12 @@ const Home = () => {
             <View style={{ flex: 4, padding: 30 }}>
                 <Text style={[styles.bemVindo, {marginTop: "8%"}]} numberOfLines={2}>Bem-vindo(a) ao {"\n"} booklit</Text>
                 <View style={{flex: 2, justifyContent: "space-between"}}>
-                    <Link href="/autenticacao/login" asChild>
+                    <Link href="./Login" asChild>
                         <TouchableHighlight style={styles.botaoVerde} underlayColor="#0C3D0A">
                             <Text style={styles.textoBotao}>Fazer Login</Text>
                         </TouchableHighlight>
                     </Link>
-                    <Link style={{marginBottom:"10%"}} href="/autenticacao/signin" asChild>
+                    <Link style={{marginBottom:"10%"}} href="./Signin"  asChild>
                         <TouchableHighlight>
                             <Text style={styles.textoCriarConta}>ou <Text style={{color: "#0066dd"}}> Criar uma nova conta</Text> </Text>
                         </TouchableHighlight>
@@ -82,4 +96,4 @@ const styles = StyleSheet.create({
 
 
 
-export default Home;
+export default index;

@@ -1,23 +1,25 @@
-import { Link, Redirect, Stack, useRouter } from "expo-router";
+import { Link, useFocusEffect, Redirect, router} from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useContext } from "react";
 import { Text, View, StyleSheet, TouchableOpacity, TextInput, Button, KeyboardAvoidingView, Platform, TouchableHighlight} from "react-native"
+import { UserContext } from "../../contexts/UserContext";
+
 import api from "../../api/api";
-
 // //import obj from api
-
-function signin() {    
-    const router = useRouter();
+function Signin() {    
+    const [userInfo, setUserInfo] = useContext(UserContext);
 
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
-    const [userExists, setUserExists] = useState(false);
 
+    const [userExists, setUserExists] = useState(false);
+    const [emailExists, setEmailExists] = useState(false);
+    
     const checkUserExists = async () => {
         try {
-            const res = await api.post("/user/checkUser", { "username": username });
+            const res = await api.post("/auth/checkUser", { "username": username });
             setUserExists(res.data.cadastrado);
             if(res.data.cadastrado) console.log(username + " existe no db");
             else console.log(username + " nao existe no db");
@@ -26,6 +28,28 @@ function signin() {
         }
     }
 
+    const registerUser = async () => {
+        try{
+            let body = {
+                "username": username,
+                "email": email,
+                "password": password, 
+                "nome": name,
+            }
+            const res = await api.post("/auth/signup", body);
+            if(res.data.cadastro_feito){
+                setUserInfo({
+                    "username": username,
+                    "token": token,
+                    "isLoggedIn": true
+                })
+                return router.push('/main/Home');
+            }
+        } catch {
+
+        }
+    }
+    
     const UserExistsMessage = ({ exists }) => {
         if (exists) {
             return <Text style={{padding:6, color: "red" }}>Nome de usuário já cadastrado</Text>;
@@ -81,13 +105,15 @@ function signin() {
                         onChangeText={ (text) => setPassword(text) }
                     />
                 </View>
-                <Link href="/autenticacao/login" asChild>
-                    <TouchableHighlight style={styles.botaoVerde} underlayColor="#0C3D0A">
+                <View>
+                    <TouchableHighlight
+                        onPress={ registerUser }
+                        style={styles.botaoVerde} underlayColor="#0C3D0A">
                         <Text style={styles.textoBotao}>Criar conta</Text>
                     </TouchableHighlight>
-                </Link>
+                </View>
             </KeyboardAvoidingView>
-            <Link href="/autenticacao/login" asChild>
+            <Link href="/Login" replace asChild>
                 <TouchableOpacity>
                     <Text style={styles.textoCriarConta}>Já possui uma conta? <Text style={[styles.textoCriarConta, {color: "#0066dd"}]}>Entre</Text> ao invés disso</Text>
                 </TouchableOpacity>
@@ -96,6 +122,7 @@ function signin() {
         </View>
     )
 }
+
 
 const styles = StyleSheet.create({
     textoInscrevaSe: {
@@ -153,4 +180,4 @@ const styles = StyleSheet.create({
 })
 
 
-export default signin;
+export default Signin;
