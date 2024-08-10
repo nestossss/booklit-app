@@ -2,7 +2,7 @@ import Feather from '@expo/vector-icons/Feather';
 import axios from 'axios';
 import { useState } from 'react';
 import { StyleSheet, View, TextInput, ScrollView, TouchableHighlight, Pressable, FlatList} from "react-native";
-import { Livro } from '../../components/home/LivroCard';
+import { Livro } from '../../components/LivroCard';
 
 const googleKey = process.env.EXPO_PUBLIC_GOOGLE_API_KEY;
 

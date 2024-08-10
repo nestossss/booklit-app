@@ -1,7 +1,7 @@
 import { useContext, useState, useEffect } from "react";
 import { StyleSheet, View, FlatList } from "react-native";
 import { UserContext } from "../../../contexts/UserContext";
-import { Livro } from "../../../components/home/LivroCard";
+import { Livro } from "../../../components/LivroCard";
 
 import axios from "axios";
  
@@ -18,13 +18,13 @@ export default function HomePage(){
     let [userInfo] = useContext(UserContext);
 
     async function getBooks(){
-        let res = await axios.get(`https://www.googleapis.com/books/v1/volumes?q=codigodavinci&key-${googleKey}`)
+        let res = await axios.get(`https://www.googleapis.com/books/v1/volumes?q=alice no país&key=${googleKey}`)
         setBookList(res.data.items);
     }
 
     const renderBookList = ({item}) => {
         if(item){
-            return <Livro title={item.volumeInfo.title} imageUrl={item.volumeInfo?.imageLinks?.thumbnail} authors={item.volumeInfo?.authors}/>
+            return <Livro googleId={item.id} title={item.volumeInfo.title} imageUrl={item.volumeInfo?.imageLinks?.thumbnail} authors={item.volumeInfo?.authors}/>
         }
     }
 

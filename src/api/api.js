@@ -1,7 +1,9 @@
 import axios from "axios";
 
+const API_URL = process.env.EXPO_PUBLIC_API_URL;
+
 const api = axios.create({
-    baseURL: "http://192.168.65.61:80",
+    baseURL: API_URL,
     headers: {
         "Content-Type":"application/x-www-form-urlencoded",
     }

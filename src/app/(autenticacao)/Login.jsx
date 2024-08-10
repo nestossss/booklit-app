@@ -7,7 +7,7 @@ import { Text, View, StyleSheet, TouchableOpacity, TextInput, Button, TouchableH
 import api from "../../api/api";
 
 import { UserContext } from "../../contexts/UserContext";
-import { InvalidText } from '../../components/auth/Messages';
+import { InvalidText } from '../../components/AuthMessages';
 
 function Login() {    
 
@@ -32,7 +32,7 @@ function Login() {
                     "token": res.data.token,
                     "isLoggedIn": true,
                 });
-                return router.push("/main/Home");
+                return router.replace("/main/Home");
              }
             if(res && res.data.cadastrado){
                 return setPasswordIncorrect(true);

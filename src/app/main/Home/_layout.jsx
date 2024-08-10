@@ -1,6 +1,6 @@
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 
-import HomePage from '../../screens/Home/HomePage';
+import HomePage from './HomePage';
 
 import { NavigationContainer } from '@react-navigation/native';
 

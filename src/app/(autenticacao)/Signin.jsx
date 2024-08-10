@@ -1,4 +1,4 @@
-import { Link, useFocusEffect, Redirect, router} from "expo-router";
+import { Link, router} from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useCallback, useEffect, useState, useContext } from "react";
 import { Text, View, StyleSheet, TouchableOpacity, TextInput, Button, KeyboardAvoidingView, Platform, TouchableHighlight} from "react-native"
@@ -28,25 +28,21 @@ function Signin() {
         }
     }
 
-    const registerUser = async () => {
-        try{
-            let body = {
+    async function registerUser(){
+        let body = {
+            "username": username,
+            "email": email,
+            "password": password, 
+            "nome": name,
+        }
+        const res = await api.post("/auth/signup", body);
+        if(res && res.data.cadastro_feito){
+            setUserInfo({
                 "username": username,
-                "email": email,
-                "password": password, 
-                "nome": name,
-            }
-            const res = await api.post("/auth/signup", body);
-            if(res.data.cadastro_feito){
-                setUserInfo({
-                    "username": username,
-                    "token": token,
-                    "isLoggedIn": true
-                })
-                return router.push('/main/Home');
-            }
-        } catch {
-
+                "token": res.data.token,
+                "isLoggedIn": true
+            })
+            return router.replace("/main/Home");
         }
     }
     
@@ -105,13 +101,11 @@ function Signin() {
                         onChangeText={ (text) => setPassword(text) }
                     />
                 </View>
-                <View>
-                    <TouchableHighlight
-                        onPress={ registerUser }
-                        style={styles.botaoVerde} underlayColor="#0C3D0A">
-                        <Text style={styles.textoBotao}>Criar conta</Text>
-                    </TouchableHighlight>
-                </View>
+                <TouchableHighlight
+                    onPress={ registerUser }
+                    style={styles.botaoVerde} underlayColor="#0C3D0A">
+                    <Text style={styles.textoBotao}>Criar conta</Text>
+                </TouchableHighlight>
             </KeyboardAvoidingView>
             <Link href="/Login" replace asChild>
                 <TouchableOpacity>

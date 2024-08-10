@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { StyleSheet, View, Text, FlatList } from "react-native";
 import { UserContext } from "../../../contexts/UserContext";
-
+import { useNavigation } from "expo-router";
 export default function HomeScreen(){
     
     let [userInfo] = useContext(UserContext);

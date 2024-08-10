@@ -32,12 +32,12 @@ const index = () => {
             <View style={{ flex: 4, padding: 30 }}>
                 <Text style={[styles.bemVindo, {marginTop: "8%"}]} numberOfLines={2}>Bem-vindo(a) ao {"\n"} booklit</Text>
                 <View style={{flex: 2, justifyContent: "space-between"}}>
-                    <Link href="./Login" asChild>
+                    <Link replace href="./Login" asChild>
                         <TouchableHighlight style={styles.botaoVerde} underlayColor="#0C3D0A">
                             <Text style={styles.textoBotao}>Fazer Login</Text>
                         </TouchableHighlight>
                     </Link>
-                    <Link style={{marginBottom:"10%"}} href="./Signin"  asChild>
+                    <Link replace style={{marginBottom:"10%"}} href="./Signin"  asChild>
                         <TouchableHighlight>
                             <Text style={styles.textoCriarConta}>ou <Text style={{color: "#0066dd"}}> Criar uma nova conta</Text> </Text>
                         </TouchableHighlight>
