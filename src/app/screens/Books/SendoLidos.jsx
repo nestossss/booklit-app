@@ -1,9 +1,17 @@
 import { StyleSheet, View, Text } from "react-native";
- 
+import { RouteFocusContext } from "../../../contexts/RouteFocusContext";
+import { useCallback, useContext } from "react";
+import { useFocusEffect } from "expo-router";
 export default function SendoLidos(){
+    const [titleFocused, setFocused] = useContext(RouteFocusContext);
+
+
+    useFocusEffect( useCallback(() => {
+        setFocused('Sendo Lidos');
+    }, [] ) );
+
     return (
         <View style={styles.screen}>
-            
         </View>
     )
 }

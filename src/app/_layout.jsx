@@ -1,9 +1,12 @@
 import { Stack } from "expo-router";
 import { useState } from "react";
 import { UserContext } from '../contexts/UserContext';
-import { StatusBar } from 'expo-status-bar';
+import { StatusBar as ExpoStatusBar} from 'expo-status-bar';
+import { HeaderDefault } from "../components/HeaderDefault";
+import { StatusBar  } from 'react-native';
 
 export default function root(){
+   
    const [userInfo, setUserInfo] = useState({
       username: null,
       email: null,
@@ -13,7 +16,7 @@ export default function root(){
    
    return (
       <UserContext.Provider value={[userInfo, setUserInfo]}>
-         <StatusBar style="dark"/>
+         <ExpoStatusBar style="inverted" backgroundColor="#000"/>
          <Stack>
             <Stack.Screen name="index" options={{
                animation: 'none',
@@ -31,8 +34,19 @@ export default function root(){
                headerShown: false,
                animation: 'none',
             }} />
-            <Stack.Screen name="(bookScreens)/EditLivro/[idLivro]"/>
-            <Stack.Screen name="(bookScreens)/InfoLivro/[googleId]"/>
+            <Stack.Screen name="(bookScreens)/EditLivro/[idLivro]"
+               options={{
+                  header: ({ navigation }) => {
+                     return <HeaderDefault hasBackButton router={navigation} text={"Editar Livro"}/>
+                  }
+               }}
+            />
+            <Stack.Screen name="(bookScreens)/InfoLivro/[googleId]"
+               options={{
+                  header: ({ navigation }) => {
+                     return <HeaderDefault hasBackButton router={navigation} text={"Ver Livro"}/>
+                  }
+               }}/>
          </Stack>
       </UserContext.Provider>
    )

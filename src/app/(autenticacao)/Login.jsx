@@ -59,7 +59,7 @@ function Login() {
 
     return (
         <View style={styles.screen}>
-            <StatusBar backgroundColor="black" style="inverted"/>
+            <StatusBar backgroundColor="#000" style="light"/>
             <KeyboardAvoidingView
                 style={{flex: 1}}
                 behavior={Platform.OS === "ios" ? "padding" : "height"}

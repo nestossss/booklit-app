@@ -1,6 +1,15 @@
 import { StyleSheet, View, Text } from "react-native";
- 
+import { RouteFocusContext } from "../../../contexts/RouteFocusContext";
+import { useCallback, useContext } from "react";
+import { useFocusEffect } from "expo-router";
 export default function Terminados(){
+
+    const [titleFocused, setFocused] = useContext(RouteFocusContext);
+
+    useFocusEffect( useCallback(() => {
+        setFocused('Terminados');
+    }, [] ) );
+
     return (
         <View style={styles.screen}>
             <Text> ajuda socorro - termineni </Text>

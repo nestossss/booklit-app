@@ -89,18 +89,20 @@ export default function InfoLivro(){
       getBook();
       getRegistro();
    }, [googleId])
-
-   return (
-      <>
-         {
-         (isLivroSalvo == null  || !book)
-         ?
-         <View style={[styles.screen, {justifyContent: 'center', alignItems: 'center'}]}>
-            <ActivityIndicator color={"#47A538"} size={100} />
+   
+   if(isLivroSalvo == null  || !book){
+      return (
+         <View style={styles.loadingScreen}>
+               <ActivityIndicator color={"#47A538"} size={100} />
          </View>
-         : book?.naoEncontrado? 
-         <Text>Livro não encontrado, religa a netttt</Text>
-         :
+      )
+   }
+   if(book?.naoEncontrado){
+      return (
+         <Text style={[styles.loadingScreen, { color: 'white'}]}>Livro não encontrado</Text>
+      )
+   }
+   return (
          <ScrollView contentContainerStyle={styles.containerScreen} style={styles.screen}>
             <View style={styles.infoContainer}>
                <View style={[styles.imgThumnail]}>
@@ -180,22 +182,27 @@ export default function InfoLivro(){
                </View>
             </View>
          </ScrollView>
-         }   
-      </>
    )
 }
 
 const styles = StyleSheet.create({
+   loadingScreen: {
+      flex:1,
+      justifyContent: 'center',
+      alignItems: 'center',
+   },
    containerScreen: {
       flexGrow: 1,
       width: "100%", 
    },
    screen: {
       flex: 1,
-      backgroundColor: "#000",
+      backgroundColor: "#408000",
       width: "100%",
    },
    infoContainer: {
+      flex: 1,
+      backgroundColor: '#000',
       paddingTop: 50,
       alignItems: 'center'
    },

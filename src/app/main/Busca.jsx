@@ -1,7 +1,7 @@
 import Feather from '@expo/vector-icons/Feather';
 import axios from 'axios';
 import { useState } from 'react';
-import { StyleSheet, View, TextInput, ScrollView, TouchableHighlight, Pressable, FlatList} from "react-native";
+import { StyleSheet, View, TextInput, ScrollView, StatusBar, Pressable, FlatList} from "react-native";
 import { LivroCard} from '../../components/LivroCard';
 
 const googleKey = process.env.EXPO_PUBLIC_GOOGLE_API_KEY;
@@ -72,6 +72,7 @@ export default function Busca(){
 }
 const styles = StyleSheet.create({
     screen: {
+        paddingTop: StatusBar.currentHeight,
         backgroundColor: "black",
         flex: 1,
     },

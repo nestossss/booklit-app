@@ -1,6 +1,14 @@
 import { StyleSheet, View, Text } from "react-native";
+import { RouteFocusContext } from "../../../contexts/RouteFocusContext";
+import { useCallback, useContext } from "react";
+import { useFocusEffect } from "expo-router";
  
 export default function Salvos(){
+    const [titleFocused, setFocused] = useContext(RouteFocusContext);
+
+    useFocusEffect( useCallback(() => {
+        setFocused('Livros Salvos');
+    }, [] ) );
     return (
         <View style={styles.screen}>
             <Text> ajuda socorro - salvo</Text>

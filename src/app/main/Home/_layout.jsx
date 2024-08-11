@@ -2,7 +2,6 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 
 import HomePage from './HomePage';
 
-import { NavigationContainer } from '@react-navigation/native';
 
 import { ScrollView, View } from 'react-native';
 import Estatisticas from '../../screens/Home/Estatisticas';
@@ -15,12 +14,31 @@ const Tab = createMaterialTopTabNavigator();
 export default function HomeLayout(){
    return (
       <View>
-         <ScrollView>
-            <Tab.Navigator initialRouteName='ContinuarLendo' style={{minHeight: 600}}>
-               <Tab.Screen name='ContinuarLendo' component={ContinuarLendo} options={{title: "Home"}}/>
-               <Tab.Screen name='Metas' component={Metas}/>
-               <Tab.Screen name='Streak' component={Streak}/>
-               <Tab.Screen name='Estatisticas' component={Estatisticas} />
+         <ScrollView contentContainerStyle={{ backgroundColor: '#47A538'}}>
+            <Tab.Navigator 
+               initialRouteName='ContinuarLendo'
+               style={{minHeight: 420}}
+            >
+               <Tab.Screen 
+                  name='ContinuarLendo' 
+                  component={ContinuarLendo} 
+                  options={{
+
+                     title: "Home"
+                  }}
+               />
+               <Tab.Screen 
+                  name='Metas' 
+                  component={Metas}
+               />
+               <Tab.Screen 
+                  name='Streak' 
+                  component={Streak}
+               />
+               <Tab.Screen 
+                  name='Estatisticas' 
+                  component={Estatisticas} 
+               />
             </Tab.Navigator>
             <HomePage/>
          </ScrollView>

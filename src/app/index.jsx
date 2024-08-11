@@ -21,7 +21,7 @@ const index = () => {
 
     return (
         <View style={styles.baseScreen}>
-            <StatusBar backgroundColor="black" style="inverted"/>
+            <StatusBar backgroundColor="#fff" style="light"/>
             <ImageBackground style={{flex: 3,  alignItems: "center", justifyContent: "flex-end" }} resizeMode="cover" source={require("../../assets/backgrounds/logoback.png")}>
                     <LinearGradient
                         colors={['transparent' , '#000000']}
@@ -51,7 +51,7 @@ const index = () => {
 const styles = StyleSheet.create({
     baseScreen: {
         flex: 1,
-        backgroundColor: "#000000",
+        backgroundColor: "#000",
     },
     bemVindo: {
         flex: 1,
