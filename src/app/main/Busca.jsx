@@ -2,7 +2,7 @@ import Feather from '@expo/vector-icons/Feather';
 import axios from 'axios';
 import { useState } from 'react';
 import { StyleSheet, View, TextInput, ScrollView, TouchableHighlight, Pressable, FlatList} from "react-native";
-import { Livro } from '../../components/LivroCard';
+import { LivroCard} from '../../components/LivroCard';
 
 const googleKey = process.env.EXPO_PUBLIC_GOOGLE_API_KEY;
 
@@ -15,7 +15,6 @@ export default function Busca(){
         let res = await axios.get(`https://www.googleapis.com/books/v1/volumes?q=${searchParams}&key=${googleKey}`);
         let results = res?.data?.items;
         if(results){
-            console.log(results);
             return setSearchResults(results);
         }
         return console.log("não foi achado"); 
@@ -27,8 +26,13 @@ export default function Busca(){
     }
 
     function renderSearchResults({item}){
-        if(item){
-            return <Livro title={item.volumeInfo.title} imageUrl={item.volumeInfo?.imageLinks?.thumbnail} authors={item.volumeInfo?.authors}/>
+        if(item.id && item.volumeInfo?.imageLinks?.thumbnail){
+            return <LivroCard
+                googleId={item.id}
+                title={item.volumeInfo.title} 
+                imageUrl={item.volumeInfo?.imageLinks?.thumbnail} 
+                authors={item.volumeInfo?.authors}
+            />
         }
     }
 

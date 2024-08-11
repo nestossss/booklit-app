@@ -31,6 +31,8 @@ export default function root(){
                headerShown: false,
                animation: 'none',
             }} />
+            <Stack.Screen name="(bookScreens)/EditLivro/[idLivro]"/>
+            <Stack.Screen name="(bookScreens)/InfoLivro/[googleId]"/>
          </Stack>
       </UserContext.Provider>
    )

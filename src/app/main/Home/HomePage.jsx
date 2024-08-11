@@ -1,7 +1,7 @@
 import { useContext, useState, useEffect } from "react";
 import { StyleSheet, View, FlatList } from "react-native";
 import { UserContext } from "../../../contexts/UserContext";
-import { Livro } from "../../../components/LivroCard";
+import { LivroCard } from "../../../components/LivroCard";
 
 import axios from "axios";
  
@@ -23,8 +23,9 @@ export default function HomePage(){
     }
 
     const renderBookList = ({item}) => {
-        if(item){
-            return <Livro googleId={item.id} title={item.volumeInfo.title} imageUrl={item.volumeInfo?.imageLinks?.thumbnail} authors={item.volumeInfo?.authors}/>
+        console.log(item)
+        if(item.id){
+            return <LivroCard googleId={item.id} title={item.volumeInfo.title} imageUrl={item.volumeInfo?.imageLinks?.thumbnail} authors={item.volumeInfo?.authors}/>
         }
     }
 
