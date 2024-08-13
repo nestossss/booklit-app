@@ -42,10 +42,13 @@ const styles = StyleSheet.create({
    },
    textTitle: {
       flex: 1,
+      fontSize: 14,
+      fontWeight: '600',
       color: "#fff",
    },
    textAuthors: {
       flex: 1,
+      fontSize: 12,
       color: "#A8A8A8"
    },
 })

@@ -9,13 +9,19 @@ import api from "../../api/api";
 function Signin() {    
     const [userInfo, setUserInfo] = useContext(UserContext);
 
+    const [userInput, setUserInput] = useState({
+        name: "",
+        email: "",
+        username: "",
+        password: "",
+    });
+
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
 
     const [userExists, setUserExists] = useState(false);
-    const [emailExists, setEmailExists] = useState(false);
     
     const checkUserExists = async () => {
         try {
@@ -27,7 +33,7 @@ function Signin() {
             console.log(err.message);
         }
     }
-
+    
     async function registerUser(){
         let body = {
             "username": username,
@@ -36,7 +42,13 @@ function Signin() {
             "nome": name,
         }
         const res = await api.post("/auth/signup", body);
-        if(res && res.data.cadastro_feito){
+        if(res && res.data.cadastro_feito && res.data.token){
+            let authData = {
+                "username": username,
+                "token": res.data.token,
+            }
+            let authDataString = JSON.stringify(authData);
+            await AsyncStorage.setItem('booklit-auth', authDataString);
             setUserInfo({
                 "username": username,
                 "token": res.data.token,
@@ -45,7 +57,40 @@ function Signin() {
             return router.replace("/main/Home");
         }
     }
+
+    // NAO ESQUECER DE COLOCAR ISSO P RODAR
+    function handleUsernameInput(text){
+        setUsername(text);
+
+        if(text.length > 30){
+            return setFieldsValidation({
+                ...fieldsValidation,
+                usernameMessage: "Máximo de 30 caracteres",
+                username: false,
+            })
+        }
+        if(/^[\W\d_]/u.test(text)){
+            return setFieldsValidation({
+                ...fieldsValidation,
+                usernameMessage: "Precisa começar com uma letra",
+                username: false
+            })
+        }
+        if(/[\p{M}ç]/u.test(text)){
+            return setFieldsValidation({
+                ...fieldsValidation,
+                usernameMessage: "Não são permitidas letras com acento",
+                username: false,
+            })
+        }
+        return setFieldsValidation({
+            ...fieldsValidation,
+            usernameMessage: "",
+            username: true,
+        })
+    }
     
+
     const UserExistsMessage = ({ exists }) => {
         if (exists) {
             return <Text style={{padding:6, color: "red" }}>Nome de usuário já cadastrado</Text>;
@@ -54,7 +99,7 @@ function Signin() {
 
     return (
         <View style={styles.screen} >
-            <StatusBar backgroundColor="black" style="inverted"/>
+            <StatusBar backgroundColor="#000" style="light"/>
             <KeyboardAvoidingView
                 style={{flex: 1}}
                 behavior={Platform.OS === "ios" ? "padding" : "height"}

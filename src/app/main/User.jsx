@@ -1,9 +1,20 @@
-import { StyleSheet, View, Text } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { router } from "expo-router";
+import { StyleSheet, View, Text, Button } from "react-native";
  
 export default function User(){
+
+    async function fazerLogout(){
+        return await AsyncStorage.removeItem('booklit-auth');
+    }
+
     return (
         <View style={styles.screen}>
             <Text style={styles.text}>Tela de usuario</Text>
+            <Button onPress={() => {
+                fazerLogout();
+                router.replace('/');
+            }}  title="Fazer logout"/>
         </View>
     )
 }

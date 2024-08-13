@@ -3,6 +3,7 @@ import { Link, Redirect, router } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useEffect, useState, useContext } from "react";
 import { Text, View, StyleSheet, TouchableOpacity, TextInput, Button, TouchableHighlight, KeyboardAvoidingView, Platform} from "react-native"
+import AsyncStorage, { useAsyncStorage } from "@react-native-async-storage/async-storage";
 
 import api from "../../api/api";
 
@@ -16,6 +17,13 @@ function Login() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
 
+    const [fieldsValidation, setFieldsValidation] = useState({
+        username: null,
+        usernameMessage: "",
+        password: null,
+        passwordMessage: "",
+    });
+
     const [userExists, setUserExists] = useState(true);
     const [isPasswordIncorrect, setPasswordIncorrect] = useState(false);
 
@@ -27,11 +35,14 @@ function Login() {
             }
             let res = await api.post('/auth/login', body);
             if(res && res.data.cadastrado && res.data.senha_correta){
-                setUserInfo({
+                let authData = {
                     "username": username,
                     "token": res.data.token,
-                    "isLoggedIn": true,
-                });
+                }
+                let authDataString = JSON.stringify(authData);
+                await AsyncStorage.setItem('booklit-auth', authDataString);
+                setUserInfo(authData);
+                router.back();
                 return router.replace("/main/Home");
              }
             if(res && res.data.cadastrado){
@@ -45,10 +56,20 @@ function Login() {
         }
     }
 
+    function handlePasswordInput(text){
+        
+    }
+    
     const checkUserExists = async () => {
         try {
             const res = await api.post("/auth/checkUser", { "username": username });
-            setUserExists(res.data.cadastrado);
+            if(username.length <= 0){
+
+            }
+            if(res && res.data.cadastrado != undefined)
+                return setUserExists(res.data.cadastrado)
+            
+
             setPasswordIncorrect(false);
             if(res.data.cadastrado) console.log(username + " existe no db");
             else console.log(username + " nao existe no db");
@@ -56,7 +77,6 @@ function Login() {
             console.log(err.message);
         }
     }
-
     return (
         <View style={styles.screen}>
             <StatusBar backgroundColor="#000" style="light"/>
@@ -65,7 +85,7 @@ function Login() {
                 behavior={Platform.OS === "ios" ? "padding" : "height"}
             >
                 <Text style={styles.textoEntre}> Entre agora para usar o{"\n"}booklit! </Text>
-
+                
                 {/*Input - Insira seu nome de usuario*/}
                 <View>
                     <View style={styles.inputView}>
@@ -86,9 +106,7 @@ function Login() {
                     <View style={styles.inputView}> 
                             <TextInput
                                 style={styles.inputText}
-                                onChangeText={(text) => {
-                                    setPassword(text);
-                                }}
+                                onChangeText={ (text) => { setPassword(text)} }
                                 value={password}
                                 placeholderTextColor={styles.placeholder.color}
                                 placeholder="Insira sua senha"

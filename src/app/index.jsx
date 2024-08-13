@@ -4,24 +4,41 @@ import { StyleSheet, Text, View, TouchableHighlight, Image, ImageBackground} fro
 import { StatusBar } from "expo-status-bar";
 import { LinearGradient } from 'expo-linear-gradient';
 import { Link, Redirect, useFocusEffect } from "expo-router";
-import { useCallback, useContext, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import HomeScreen from './main/Home';
 import { UserContext } from '../contexts/UserContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { LoadingScreen } from '../components/LoadingScreen';
 
 const index = () => {
 
-    let [userInfo] = useContext(UserContext);
+    let [userInfo, setUserInfo] = useContext(UserContext);
 
-    useFocusEffect(useCallback( () => {
-        if(userInfo.isLoggedIn){
-            return router.replace("./main/Home");
-        }
-    }, []))
+    let [isLoggedIn, setLoggedIn] = useState();
+    
+    useEffect( () => {
+        checkIfUserIsLogged();
+    }, [])
 
+    async function checkIfUserIsLogged(){
+        let userDataString = await AsyncStorage.getItem('booklit-auth');
+        if(userDataString == null) return setLoggedIn(false);
+        let userData = JSON.parse(userDataString);
+        setUserInfo(userData);
+        setLoggedIn(true);
+    }
 
     return (
-        <View style={styles.baseScreen}>
-            <StatusBar backgroundColor="#fff" style="light"/>
+        <>
+            {
+            isLoggedIn == undefined?
+                <LoadingScreen />
+            :
+            isLoggedIn? 
+                <Redirect href={'main/Home'}/>
+            :
+            <View style={styles.baseScreen}>
+            <StatusBar backgroundColor="#000" style="light"/>
             <ImageBackground style={{flex: 3,  alignItems: "center", justifyContent: "flex-end" }} resizeMode="cover" source={require("../../assets/backgrounds/logoback.png")}>
                     <LinearGradient
                         colors={['transparent' , '#000000']}
@@ -32,12 +49,12 @@ const index = () => {
             <View style={{ flex: 4, padding: 30 }}>
                 <Text style={[styles.bemVindo, {marginTop: "8%"}]} numberOfLines={2}>Bem-vindo(a) ao {"\n"} booklit</Text>
                 <View style={{flex: 2, justifyContent: "space-between"}}>
-                    <Link replace href="./Login" asChild>
+                    <Link href="./Login" asChild>
                         <TouchableHighlight style={styles.botaoVerde} underlayColor="#0C3D0A">
                             <Text style={styles.textoBotao}>Fazer Login</Text>
                         </TouchableHighlight>
                     </Link>
-                    <Link replace style={{marginBottom:"10%"}} href="./Signin"  asChild>
+                    <Link style={{marginBottom:"10%"}} href="./Signin"  asChild>
                         <TouchableHighlight>
                             <Text style={styles.textoCriarConta}>ou <Text style={{color: "#0066dd"}}> Criar uma nova conta</Text> </Text>
                         </TouchableHighlight>
@@ -45,6 +62,8 @@ const index = () => {
                 </View>
             </View>
         </View>
+            }
+        </>
     )
 }
 

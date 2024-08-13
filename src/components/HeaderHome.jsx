@@ -16,7 +16,7 @@ const styles = StyleSheet.create({
       paddingTop: StatusBar.currentHeight,
       alignItems: 'center',
       flexDirection: 'row',
-      height: 150,
+      height: 125,
       width: '100%',
       backgroundColor: '#47A538',
    },

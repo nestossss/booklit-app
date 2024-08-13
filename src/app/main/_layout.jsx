@@ -10,8 +10,6 @@ import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
 import { HeaderHome } from '../../components/HeaderHome';
 import { HeaderDefault } from '../../components/HeaderDefault';
-//<FontAwesome5 name="user" size={24} color="black" />
-//<FontAwesome5 name="user-alt" size={24} color="black" />
 
 export default function MainLayout(){
 
@@ -38,10 +36,7 @@ export default function MainLayout(){
                header: ({ navigation }) => {
                   return  <HeaderHome router={navigation} text={`Olá, ${userInfo.username}!`}/>
                },
-               tabBarIcon: ({focused}) => {
-                  if(focused) return <MaterialIcons name="home-filled" size={24} color='#47A538'/>
-                  return <MaterialCommunityIcons name="home-outline" size={24} color='#47A538' />
-               },
+               tabBarIcon: ({focused}) => <Ionicons name={focused? "home-sharp": 'home-outline' } size={24} color='#47A538'/>,
                tabBarLabel: 'Home',
                title: "Olá "+ userInfo.username,
             }}
@@ -58,7 +53,7 @@ export default function MainLayout(){
             name="Busca"
             options={{ 
                headerShown: false,
-               tabBarIcon: () => <Ionicons name='search' size={18} color='#47A538'/>,
+               tabBarIcon: ({focused}) => <Ionicons name='search' size={focused? 24 : 18} color='#47A538'/>,
                tabBarLabel: 'Busca',
                title: "Olá "+ userInfo.username}}
          />

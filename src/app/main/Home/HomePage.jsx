@@ -1,11 +1,11 @@
 import { useContext, useState, useEffect } from "react";
-import { StyleSheet, View, FlatList } from "react-native";
+import { StyleSheet, View, FlatList, Text } from "react-native";
 import { UserContext } from "../../../contexts/UserContext";
 import { LivroCard } from "../../../components/LivroCard";
 
 import axios from "axios";
  
-const googleKey = process.env.EXPO_PUBLIC_GOOGLE_API_KEY;
+const googleKey = process.env.EXPO_PUBLIC_GOOGLE_API_KEY
 
 if(googleKey)  console.log(googleKey);
 if(!googleKey) console.log("googleKey nao existe");
@@ -31,6 +31,7 @@ export default function HomePage(){
 
     return (
         <View style={styles.screen}>
+            <Text>Livros </Text>
             <FlatList 
                 horizontal
                 data={bookList}

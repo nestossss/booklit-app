@@ -1,16 +1,17 @@
 import { Link, useLocalSearchParams } from "expo-router";
 import { useContext, useEffect, useState } from "react";
-import { UserContext } from "../../../contexts/UserContext";
 import { View, Text, ScrollView, Image, TouchableHighlight, StyleSheet, ActivityIndicator } from "react-native";
+
 import Feather from '@expo/vector-icons/Feather';
 import Entypo from '@expo/vector-icons/Entypo';
+
 import axios from "axios";
 import api from "../../../api/api";
 
-
+import { UserContext } from "../../../contexts/UserContext";
+import { LoadingScreen } from "../../../components/LoadingScreen";
 
 const googleKey = process.env.EXPO_PUBLIC_GOOGLE_API_KEY;
-
 
 export default function InfoLivro(){
 
@@ -23,7 +24,6 @@ export default function InfoLivro(){
       setPressBorderColor({borderColor: "#47A538"});
    }
 
-   const [rotation, setRotation] = useState(0);
    const [book, setBook] = useState();
    const [isLivroSalvo, setLivroSalvo] = useState(null);
    const [livroId, setLivroId] = useState(0);
@@ -51,7 +51,6 @@ export default function InfoLivro(){
       }).catch( (err) => { console.log(err)} );
 
       if(res?.data?.registro){ 
-         console.log(res.data?.registro);
          setLivroId(res.data.registro.idlivro);
          return setLivroSalvo(true);
       }
@@ -91,15 +90,13 @@ export default function InfoLivro(){
    }, [googleId])
    
    if(isLivroSalvo == null  || !book){
-      return (
-         <View style={styles.loadingScreen}>
-               <ActivityIndicator color={"#47A538"} size={100} />
-         </View>
-      )
+      return <LoadingScreen />
    }
    if(book?.naoEncontrado){
       return (
-         <Text style={[styles.loadingScreen, { color: 'white'}]}>Livro não encontrado</Text>
+         <View style={styles.loadingScreen}> 
+            <Text style={{ color: 'white'}}>Livro não encontrado</Text>
+         </View>
       )
    }
    return (
@@ -186,11 +183,6 @@ export default function InfoLivro(){
 }
 
 const styles = StyleSheet.create({
-   loadingScreen: {
-      flex:1,
-      justifyContent: 'center',
-      alignItems: 'center',
-   },
    containerScreen: {
       flexGrow: 1,
       width: "100%", 

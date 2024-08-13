@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { StyleSheet, View, TextInput, ScrollView, StatusBar, Pressable, FlatList} from "react-native";
 import { LivroCard} from '../../components/LivroCard';
 
-const googleKey = process.env.EXPO_PUBLIC_GOOGLE_API_KEY;
+const googleKey = "AIzaSyCAguBVjk_msfejlvRtcpnrKsP0ztNjoto";
 
 export default function Busca(){
     

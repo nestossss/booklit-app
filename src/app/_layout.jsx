@@ -36,6 +36,7 @@ export default function root(){
             }} />
             <Stack.Screen name="(bookScreens)/EditLivro/[idLivro]"
                options={{
+                  animation:'flip',
                   header: ({ navigation }) => {
                      return <HeaderDefault hasBackButton router={navigation} text={"Editar Livro"}/>
                   }
