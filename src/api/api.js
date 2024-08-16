@@ -6,7 +6,7 @@ if(!API_URL) console.log("api url nao existe")
 if(API_URL) console.log("tudo certo: " + API_URL);
 
 const api = axios.create({
-    baseURL: 'http://192.168.3.103',
+    baseURL: API_URL,
     headers: {
         "Content-Type":"application/x-www-form-urlencoded",
     }
