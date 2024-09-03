@@ -63,13 +63,14 @@ export default function InfoLivro(){
       if(res?.data?.registro){ 
          console.log(tempoLido, '>', res.data.registro.tempo_lido)
          setLivroId(res.data.registro.idlivro);
-         
          setTempoLido(res.data.registro.tempo_lido);
          setPagLidas(res.data.registro.paginas_lidas);
          return setLivroSalvo(true);
       }
-      setLivroId(null);
-      setLivroSalvo(false);
+      else {
+         setLivroId(null);
+         setLivroSalvo(false);
+      }
    }
 
 
@@ -83,20 +84,27 @@ export default function InfoLivro(){
 
       let res = await api.put('/lib/adicionar/existente', body, { headers, signal })
       .catch( (err) => console.log(err) );
+      console.log(res.data);
       if(res?.data?.registro?.livro?.idlivro){
          setLivroId(res.data.registro.livro.idlivro);
       }   
+      if(res.status != 200){
+         setLivroSalvo(false)
+      }
    }
 
    async function deletar(signal){
       let headers = {
          Authorization: "Bearer "+ userInfo.token
       }
-      setLivroSalvo(false);
-      await api.delete(`/lib/remover?bookId=${livroId}`, { headers, signal  }).catch( err => console.log(err));
+      let res = await api.delete(`/lib/remover?bookId=${livroId}`, { headers, signal  }).catch( err => console.log(err));
+      console.log(res.data);
+      if(res.status != 200){
+         setLivroSalvo(true);
+      }
       setChangesMade(true);
    }
-   
+
    useEffect( ()=> {
       const controller = new AbortController();
       const signal = controller.signal;
@@ -111,28 +119,7 @@ export default function InfoLivro(){
    }, [isLivroSalvo]);
 
    async function handlePressSalvar(){
-      let headers = {
-         Authorization: "Bearer "+ userInfo.token
-      }
-
-
-      if(!isLivroSalvo){
-         setLivroSalvo(true);
-         let body = {
-            'bookUrl': googleId,
-         };
-         let res = await api.put('/lib/adicionar/existente', body, { headers })
-         .catch( (err) => console.log(err) );
-         if(res?.data?.registro?.livro?.idlivro){
-            setLivroId(res.data.registro.livro.idlivro);
-         }
-         if(res?.data?.status != 200)
-            return setLivroSalvo(false);
-         return setChangesMade(true);
-      }
-      if(livroId){
-      }
-      return setLivroSalvo(false);
+      setLivroSalvo(prev => !prev);
    }
 
    function handlePressLerAgora(){

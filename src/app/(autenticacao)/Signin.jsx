@@ -95,11 +95,10 @@ function Signin() {
             username: true,
         })
     }
-    
 
     const UserExistsMessage = ({ exists }) => {
         if (exists) {
-            return <Text style={{padding:6, color: "red" }}>Nome de usuário já cadastrado</Text>;
+            return <Text className="p-1.5 text-red-600" >Nome de usuário já cadastrado</Text>;
         }
     };
 
@@ -107,7 +106,7 @@ function Signin() {
         <View className="bg-black flex-1 justify-between p-8 py-16">
             <StatusBar backgroundColor="#000" style="light"/>
             <KeyboardAvoidingView
-                style={{flex: 1}}
+                className="flex-1"
                 behavior={Platform.OS === "ios" ? "padding" : "height"}
             >
                 <Text className="text-white text-base font-semibold text-center"> 
