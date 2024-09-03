@@ -14,7 +14,7 @@ export function HeaderBooks({router, text, hasBackButton}){
          <View style={styles.headerContainer}>
             <StatusBarExpo style='light' backgroundColor='#000'/>
             <View style={styles.headerBack}> 
-               <TouchableOpacity 
+               <TouchableOpacity  
                   activeOpacity={0.4} 
                   style={[styles.headerBackBtn]}
                   onPress={ () => { router.goBack() }}  

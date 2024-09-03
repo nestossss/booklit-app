@@ -1,17 +1,19 @@
-import { Link, useLocalSearchParams } from "expo-router";
-import { useContext, useEffect, useState } from "react";
-import { View, Text, ScrollView, Image, TouchableHighlight, StyleSheet, ActivityIndicator } from "react-native";
+import { Link, router, useLocalSearchParams } from "expo-router";
+import { useCallback, useContext, useEffect, useState } from "react";
+import { View, Text, ScrollView, Image, TouchableHighlight, StyleSheet, ActivityIndicator, Pressable } from "react-native";
 
 import Feather from '@expo/vector-icons/Feather';
 import Entypo from '@expo/vector-icons/Entypo';
 
 import axios from "axios";
-import api from "../../../api/api";
+import api from "../../api/api";
 
-import { UserContext } from "../../../contexts/UserContext";
-import { LoadingScreen } from "../../../components/LoadingScreen";
+import { UserContext } from "../../contexts/UserContext";
+import { LoadingScreen } from "../../components/LoadingScreen";
+import { useLib } from "../../hooks/useLib";
+import { useChangesMade } from "../../hooks/useChangesMade";
 
-const googleKey = process.env.EXPO_PUBLIC_GOOGLE_API_KEY;
+const googleKey = 'AIzaSyCAguBVjk_msfejlvRtcpnrKsP0ztNjoto';
 
 export default function InfoLivro(){
 
@@ -24,17 +26,23 @@ export default function InfoLivro(){
       setPressBorderColor({borderColor: "#47A538"});
    }
 
+   const [lib, setLib] = useLib();
+   const [changesMade, setChangesMade] = useChangesMade();
+
    const [book, setBook] = useState();
    const [isLivroSalvo, setLivroSalvo] = useState(null);
+
    const [livroId, setLivroId] = useState(0);
+   const [pagLidas, setPagLidas] = useState(0);
+   const [tempoLido, setTempoLido] = useState(0);
+
    const [isDescriptionExpanded, setDescriptionExpanded] = useState();
    const [userInfo] = useContext(UserContext);
 
    const { googleId } = useLocalSearchParams();
-
    
-   const getBook = async () => {
-      let res = await axios.get(`https://www.googleapis.com/books/v1/volumes/${googleId}`).catch( (reason) => { console.log(reason)});
+   const getBook = async (signal) => {
+      let res = await axios.get(`https://www.googleapis.com/books/v1/volumes/${googleId}`, { signal }).catch( (reason) => { console.log(reason)});
       let volumeInfo = res?.data?.volumeInfo;
       if(volumeInfo){
          return setBook(volumeInfo);
@@ -43,50 +51,117 @@ export default function InfoLivro(){
          naoEncontrado: true,
       });
    }
-   const getRegistro = async () => {
+
+   const getRegistro = async (signal) => {
       let res = await api.get("/lib/registro?bookUrl="+ googleId, {
+         signal,
          headers: {
             Authorization: 'Bearer '+ userInfo.token,
          }
       }).catch( (err) => { console.log(err)} );
 
       if(res?.data?.registro){ 
+         console.log(tempoLido, '>', res.data.registro.tempo_lido)
          setLivroId(res.data.registro.idlivro);
+         
+         setTempoLido(res.data.registro.tempo_lido);
+         setPagLidas(res.data.registro.paginas_lidas);
          return setLivroSalvo(true);
       }
       setLivroId(null);
       setLivroSalvo(false);
-
    }
+
+
+   async function adicionar(signal) {
+      let body = {
+         'bookUrl': googleId,
+      };
+      let headers = {
+         Authorization: "Bearer "+ userInfo.token
+      }
+
+      let res = await api.put('/lib/adicionar/existente', body, { headers, signal })
+      .catch( (err) => console.log(err) );
+      if(res?.data?.registro?.livro?.idlivro){
+         setLivroId(res.data.registro.livro.idlivro);
+      }   
+   }
+
+   async function deletar(signal){
+      let headers = {
+         Authorization: "Bearer "+ userInfo.token
+      }
+      setLivroSalvo(false);
+      await api.delete(`/lib/remover?bookId=${livroId}`, { headers, signal  }).catch( err => console.log(err));
+      setChangesMade(true);
+   }
+   
+   useEffect( ()=> {
+      const controller = new AbortController();
+      const signal = controller.signal;
+
+      if(isLivroSalvo) adicionar(signal);
+
+      if(!isLivroSalvo) deletar(signal);
+      
+      return () => {
+         controller.abort();
+      }
+   }, [isLivroSalvo]);
 
    async function handlePressSalvar(){
       let headers = {
          Authorization: "Bearer "+ userInfo.token
       }
 
+
       if(!isLivroSalvo){
+         setLivroSalvo(true);
          let body = {
             'bookUrl': googleId,
-         }
-         let res = await api.put('/lib/adicionar/existente', body, { headers });
+         };
+         let res = await api.put('/lib/adicionar/existente', body, { headers })
+         .catch( (err) => console.log(err) );
          if(res?.data?.registro?.livro?.idlivro){
-            setLivroId(res.data.registro.livro.idlivro)
+            setLivroId(res.data.registro.livro.idlivro);
          }
          if(res?.data?.status != 200)
             return setLivroSalvo(false);
-         return setLivroSalvo(true);   
+         return setChangesMade(true);
       }
       if(livroId){
-         await api.delete(`/lib/remover?bookId=${livroId}`, {
-            headers: headers,
-         }).catch( err => console.log(err));
       }
-      return setLivroSalvo(false)  
+      return setLivroSalvo(false);
+   }
+
+   function handlePressLerAgora(){
+      let bookImg = book?.imageLinks?.medium?
+      book.imageLinks.medium : book?.imageLinks?.large?
+      book.imageLinks.large  : book?.imageLinks?.small?
+      book.imageLinks.small  : book?.imageLinks?.extraLarge;
+
+      router.navigate({pathname: `/Cronometro`, params: {
+         'googleId': googleId,
+         'title': book.title,
+         'authors': book.authors,
+         'totalPagParams': book.pageCount,
+         'imgUri': bookImg.replace('http://', 'https://'),
+         'pagLidasParams': pagLidas,
+         'tempoLidoParams': tempoLido,
+      }})
    }
 
    useEffect( () => { 
-      getBook();
-      getRegistro();
+      const controller = new AbortController();
+      const signal = controller.signal;
+      
+      getBook(signal);
+      getRegistro(signal);
+
+      return () => {
+         controller.abort();
+      }
    }, [googleId])
    
    if(isLivroSalvo == null  || !book){
@@ -105,11 +180,11 @@ export default function InfoLivro(){
                <View style={[styles.imgThumnail]}>
                   <Image style={styles.image}
                      source={{
-                        uri: book?.imageLinks?.medium?
+                        uri: (book?.imageLinks?.medium?
                         book.imageLinks.medium : book?.imageLinks?.large?
                         book.imageLinks.large  : book?.imageLinks?.small?
                         book.imageLinks.small  : book?.imageLinks?.extraLarge?
-                        book.imageLinks.extraLarge : ""
+                        book.imageLinks.extraLarge : book.imageLinks.thumbnail).replace('http://', 'https://'),
                   }}/>
                </View>
 
@@ -125,24 +200,25 @@ export default function InfoLivro(){
                <View style={styles.btnsContainer}>
                   <TouchableHighlight 
                      onPressIn={ handlePressInSalvar }
-                     onPressOut={ handlePressOutSalvar }
+                     onPressOut={ handlePressOutSalvar }WWWW
                      activeOpacity={0.5}
                      style={[styles.transparentBtn, pressBorderColor]}
-                     onPress={ () => { handlePressSalvar()} }
+                     onPress={ () => { 
+                        handlePressSalvar()
+                     }}
                      >
                      <Text numberOfLines={1} style={[styles.transparentBtnText]}>
                         { isLivroSalvo? "Livro salvo XD" : "Salvar"}
                      </Text> 
                   </TouchableHighlight >
-                  <Link replace href={`/InfoLivro/${googleId}`} asChild>
-                     <TouchableHighlight 
-                        style={styles.greenBtn}
-                     >
-                           <Text numberOfLines={1} style={styles.greenBtnText}>
-                              Ler agora
-                           </Text>
-                     </TouchableHighlight>
-                  </Link>
+                  <TouchableHighlight 
+                     style={styles.greenBtn}
+                     onPress={ handlePressLerAgora }
+                  >
+                        <Text numberOfLines={1} style={styles.greenBtnText}>
+                           Ler agora
+                        </Text>
+                  </TouchableHighlight>
                </View>
                <View style={styles.pageCountContainer}>
                   <Feather 
@@ -156,23 +232,31 @@ export default function InfoLivro(){
                      </Text>
                </View>
                <View style={styles.descriptionContainer}>
-                  <View style={styles.descriptionTitleContainer}>
-                     <Text numberOfLines={1} style={styles.descriptionTitle}>Descrição</Text>
-                     <TouchableHighlight
-                        onPress={ ()  => { setDescriptionExpanded(!isDescriptionExpanded)}}
-                     >
+                  <TouchableHighlight
+                     onPress={ ()  => {
+                        setDescriptionExpanded(!isDescriptionExpanded)
+                     }}
+                  >
+                     <View style={styles.descriptionTitleContainer}>
+                        <Text 
+                           numberOfLines={1} 
+                           style={styles.descriptionTitle}
+                        >
+                              Descrição
+                        </Text>
                         <Entypo 
                            name="chevron-left" 
                            size={24} 
                            color="white"
                            style={{
                               transform: isDescriptionExpanded? 'rotate(-90deg)': 'rotate(0deg)'
-                           }} />
-                     </TouchableHighlight>
-                  </View>
+                           }} 
+                        />
+                     </View>
+                  </TouchableHighlight>
                   <Text 
                      numberOfLines={isDescriptionExpanded? 100 : 2 }
-                     style={styles.description}
+                     style={[styles.description, {color: isDescriptionExpanded? '#fff' : '#A0A0A0'}]}
                   >
                      {book.description}
                   </Text>
@@ -299,7 +383,5 @@ const styles = StyleSheet.create({
    },
    description: {
       marginTop: 15,
-      color: 'white',
-
    } 
 })

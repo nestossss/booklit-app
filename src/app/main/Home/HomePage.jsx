@@ -4,35 +4,44 @@ import { UserContext } from "../../../contexts/UserContext";
 import { LivroCard } from "../../../components/LivroCard";
 
 import axios from "axios";
+import { LoadingScreen } from "../../../components/LoadingScreen";
  
-const googleKey = process.env.EXPO_PUBLIC_GOOGLE_API_KEY
+const googleKey = 'AIzaSyCAguBVjk_msfejlvRtcpnrKsP0ztNjoto'
 
 if(googleKey)  console.log(googleKey);
 if(!googleKey) console.log("googleKey nao existe");
 
 export default function HomePage(){
 
-    const [bookList, setBookList] = useState([]);
+    const [bookList, setBookList] = useState(null);
+    
     useEffect( () => { getBooks() }, [])
     
     let [userInfo] = useContext(UserContext);
 
     async function getBooks(){
         let res = await axios.get(`https://www.googleapis.com/books/v1/volumes?q=alice no país&key=${googleKey}`)
-        setBookList(res.data.items);
+        let resBooks = res.data.items;
+        let resBooksOk = [];
+        await resBooks.forEach( book => {
+            if(book.id && book.volumeInfo?.imageLinks?.thumbnail){
+                resBooksOk.push(book);
+            }
+        });
+        setBookList(resBooksOk);
     }
 
     const renderBookList = ({item}) => {
-        console.log(item)
-        if(item.id){
-            return <LivroCard googleId={item.id} title={item.volumeInfo.title} imageUrl={item.volumeInfo?.imageLinks?.thumbnail} authors={item.volumeInfo?.authors}/>
-        }
+        return <LivroCard key={item.id} googleId={item.id} title={item.volumeInfo.title} imageUrl={item.volumeInfo?.imageLinks?.thumbnail.replace('http://', 'https://')} authors={item.volumeInfo?.authors}/>
     }
 
+    if(!bookList){
+        return <LoadingScreen/>
+    }
     return (
         <View style={styles.screen}>
-            <Text>Livros </Text>
-            <FlatList 
+            <Text>Livros</Text>
+            <FlatList
                 horizontal
                 data={bookList}
                 renderItem={ renderBookList }

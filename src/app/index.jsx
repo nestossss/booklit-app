@@ -1,24 +1,36 @@
 import 'react-native-reanimated'
 
-import { StyleSheet, Text, View, TouchableHighlight, Image, ImageBackground} from "react-native";
+import { Text, View, TouchableHighlight, Image, ImageBackground } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { LinearGradient } from 'expo-linear-gradient';
-import { Link, Redirect, useFocusEffect } from "expo-router";
-import { useCallback, useContext, useEffect, useState } from "react";
-import HomeScreen from './main/Home';
+import { Link, Redirect, SplashScreen } from "expo-router";
+import { useContext, useEffect, useState } from "react";
 import { UserContext } from '../contexts/UserContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LoadingScreen } from '../components/LoadingScreen';
+import { OpenSans_400Regular, OpenSans_500Medium, OpenSans_600SemiBold, OpenSans_700Bold, OpenSans_800ExtraBold, useFonts } from "@expo-google-fonts/open-sans";
+import { Nunito_700Bold } from '@expo-google-fonts/nunito';
 
 const index = () => {
 
-    let [userInfo, setUserInfo] = useContext(UserContext);
-
-    let [isLoggedIn, setLoggedIn] = useState();
+    const [userInfo, setUserInfo] = useContext(UserContext);
+    const [isLoggedIn, setLoggedIn] = useState();
     
     useEffect( () => {
         checkIfUserIsLogged();
     }, [])
+
+    const [fontsLoaded] = useFonts({  
+        OpenSans_400Regular,
+        OpenSans_700Bold,
+        OpenSans_500Medium,
+        OpenSans_600SemiBold,
+        OpenSans_700Bold,
+        OpenSans_800ExtraBold,
+        Nunito_700Bold,
+     })
+    if(!fontsLoaded) SplashScreen.preventAutoHideAsync();
+    if(fontsLoaded) SplashScreen.hideAsync();
 
     async function checkIfUserIsLogged(){
         let userDataString = await AsyncStorage.getItem('booklit-auth');
@@ -31,32 +43,39 @@ const index = () => {
     return (
         <>
             {
-            isLoggedIn == undefined?
-                <LoadingScreen />
+            (isLoggedIn == undefined || !fontsLoaded)?
+                <LoadingScreen/>
             :
             isLoggedIn? 
                 <Redirect href={'main/Home'}/>
             :
-            <View style={styles.baseScreen}>
+            <View className="flex-1 bg-black ">
             <StatusBar backgroundColor="#000" style="light"/>
-            <ImageBackground style={{flex: 3,  alignItems: "center", justifyContent: "flex-end" }} resizeMode="cover" source={require("../../assets/backgrounds/logoback.png")}>
+            <ImageBackground 
+                className="items-center justify-start" style={{flex: 3}} 
+                resizeMode="cover" 
+                source={require("../../assets/backgrounds/logoback.png")}
+            >
                     <LinearGradient
+                        className="bg-transparent h-80 absolute left-0 right-0 bottom-0"
                         colors={['transparent' , '#000000']}
-                        style={styles.background}
                     />
-                    <Image source={require("../../assets/images/logo.png")}/>
+                    <Image className="top-12 w-40" resizeMode='center' source={require('../../assets/icons/1-bola.png')}/>
             </ImageBackground>
-            <View style={{ flex: 4, padding: 30 }}>
-                <Text style={[styles.bemVindo, {marginTop: "8%"}]} numberOfLines={2}>Bem-vindo(a) ao {"\n"} booklit</Text>
-                <View style={{flex: 2, justifyContent: "space-between"}}>
+            <View className="p-8" style={{flex: 4}}>
+                <Text className="text-3xl flex-1 text-white text-center font-bold mt-6" numberOfLines={2}>Bem-vindo(a) ao {"\n"} booklit</Text>
+                <View className="justify-between" style={{flex: 2}}>
                     <Link href="./Login" asChild>
-                        <TouchableHighlight style={styles.botaoVerde} underlayColor="#0C3D0A">
-                            <Text style={styles.textoBotao}>Fazer Login</Text>
+                        <TouchableHighlight 
+                            className="p-4 h-14 rounded-xl bg-main-green/75 justify-center"
+                            underlayColor="#0C3D0A"
+                        >
+                            <Text className="text-base text-white font-semibold text-center">Fazer Login</Text>
                         </TouchableHighlight>
                     </Link>
-                    <Link style={{marginBottom:"10%"}} href="./Signin"  asChild>
+                    <Link className='mb-5' href="./Signin"  asChild>
                         <TouchableHighlight>
-                            <Text style={styles.textoCriarConta}>ou <Text style={{color: "#0066dd"}}> Criar uma nova conta</Text> </Text>
+                            <Text className="text-white text-sm text-center font-normal">ou <Text className="text-azul-azulado"> Criar uma nova conta</Text> </Text>
                         </TouchableHighlight>
                     </Link>
                 </View>
@@ -67,52 +86,4 @@ const index = () => {
     )
 }
 
-const styles = StyleSheet.create({
-    baseScreen: {
-        flex: 1,
-        backgroundColor: "#000",
-    },
-    bemVindo: {
-        flex: 1,
-        color: "#fff",
-        fontSize: 30,
-        fontWeight: "700",
-        textAlign: "center",
-    },
-    botaoVerde: {
-        height: 55,
-        backgroundColor: 'green',
-        padding: 15,
-        borderRadius: 15,
-    }, 
-    botaoBranco: {
-        backgroundColor: 'white',
-        padding: 15,
-        borderRadius: 15,
-    },
-    textoBotao: {
-        fontSize: 15,
-        color: "#fff",
-        fontWeight: "600",
-        textAlign: "center",
-    },
-    textoCriarConta: {
-        fontSize: 14,
-        color: "#fff",
-        fontWeight: "400",
-        textAlign: "center",
-    },
-    brandLogo:{},
-    background:{
-        position: "absolute",
-        left: 0,
-        right: 0,
-        bottom: 0,
-        height: 300,
-    }, 
-})
-
-
-
-
-export default index;
+export default index

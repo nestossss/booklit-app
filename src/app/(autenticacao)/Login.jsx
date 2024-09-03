@@ -1,9 +1,9 @@
 import { Link, Redirect, router } from "expo-router";
 
 import { StatusBar } from "expo-status-bar";
-import { useEffect, useState, useContext } from "react";
+import { useState, useContext } from "react";
 import { Text, View, StyleSheet, TouchableOpacity, TextInput, Button, TouchableHighlight, KeyboardAvoidingView, Platform} from "react-native"
-import AsyncStorage, { useAsyncStorage } from "@react-native-async-storage/async-storage";
+import { useAsyncStorage } from "@react-native-async-storage/async-storage";
 
 import api from "../../api/api";
 
@@ -11,6 +11,7 @@ import { UserContext } from "../../contexts/UserContext";
 import { InvalidText } from '../../components/AuthMessages';
 
 function Login() {    
+    const AsyncStorage = useAsyncStorage('booklit-auth');
 
     const [userInfo, setUserInfo] = useContext(UserContext);
 
@@ -40,7 +41,7 @@ function Login() {
                     "token": res.data.token,
                 }
                 let authDataString = JSON.stringify(authData);
-                await AsyncStorage.setItem('booklit-auth', authDataString);
+                await AsyncStorage.setItem(authDataString);
                 setUserInfo(authData);
                 router.back();
                 return router.replace("/main/Home");
@@ -78,20 +79,23 @@ function Login() {
         }
     }
     return (
-        <View style={styles.screen}>
+        <View className="flex-1 text-white bg-black justify-between p-8 py-16">
             <StatusBar backgroundColor="#000" style="light"/>
             <KeyboardAvoidingView
-                style={{flex: 1}}
+                className="flex-1"
                 behavior={Platform.OS === "ios" ? "padding" : "height"}
             >
-                <Text style={styles.textoEntre}> Entre agora para usar o{"\n"}booklit! </Text>
-                
+                <Text className="text-white text-base font-medium text-center">
+                    Entre agora para usar o{"\n"}booklit!
+                </Text>
+
                 {/*Input - Insira seu nome de usuario*/}
                 <View>
-                    <View style={styles.inputView}>
+                    <View className="mt-10 border border-input-gray rounded-xl h-14 w-full">
                         <TextInput
-                            style={styles.inputText}
+                            className="p-4 text-white flex-1"
                             value={username}
+                            textContentType="nickname"
                             placeholderTextColor={styles.placeholder.color}
                             placeholder="Insira seu nome de usuário"
                             onChangeText={ (text) => { setUsername(text) }}
@@ -103,11 +107,13 @@ function Login() {
 
                 {/*Input - Insira sua senha*/}
                 <View>
-                    <View style={styles.inputView}> 
+                    <View className="mt-10 border border-input-gray rounded-xl h-14 w-full">
                             <TextInput
-                                style={styles.inputText}
+                                className="p-4 text-white flex-1"
+                                secureTextEntry={true}
                                 onChangeText={ (text) => { setPassword(text)} }
                                 value={password}
+                                textContentType="password"
                                 placeholderTextColor={styles.placeholder.color}
                                 placeholder="Insira sua senha"
                             />
@@ -115,75 +121,33 @@ function Login() {
                     <InvalidText show={isPasswordIncorrect}>Senha incorreta</InvalidText>
                 </View>
 
-                <TouchableHighlight style={styles.botaoVerde} onPress={ validateCredentials } underlayColor="#0C3D0A">
-                        <Text style={styles.textoBotao}>Entrar</Text>
+                <TouchableHighlight 
+                className="mt-16 h-14 bg-main-green/75 p-4 rounded-xl" 
+                    onPress={ validateCredentials } 
+                    underlayColor="#0C3D0A"
+                >
+                        <Text className="text-base text-white font-medium text-center">
+                            Entrar
+                        </Text>
                 </TouchableHighlight>
             </KeyboardAvoidingView>
             <Link href="/Signin" replace asChild>
                 <TouchableOpacity>
-                    <Text style={styles.textoCriarConta}>Não possui uma conta? <Text style={[styles.textoCriarConta, {color: "#0066dd"}]}>Inscreva-se</Text> já</Text>
+                    <Text className="text-sm text-white font-normal text-center"> 
+                        Não possui uma conta? 
+                        <Text className="text-azul-azulado"> Inscreva-se </Text> 
+                        já 
+                    </Text>
                 </TouchableOpacity>
             </Link>
         </View>
     )
 }
 
-const styles = StyleSheet.create({    
-    screen: {
-        color: "white",
-        backgroundColor: "black",
-        flex: 1,
-        justifyContent: "space-between",
-        padding: 30,
-        paddingVertical: 60,
-    },
-    textWhite: {
-        color: "white"
-    },
-    textoCriarConta: {
-        fontSize: 14,
-        color: "#fff",
-        fontWeight: "400",
-        textAlign: "center",
-    },
-    textoEntre: {
-        color: "white",
-        fontSize: 16,
-        fontWeight: "600",
-        textAlign: "center",
-        
-    }, 
-    inputView: {
-        marginTop: 40,
-        borderColor: "#959595",
-        borderWidth: 1.5,
-        borderRadius: 15,
-        height: 55,
-        width: "100%",
-    },
-    inputText: {
-        padding: 15,
-        color:"white",
-        flex: 1,
-    },
+const styles = {    
     placeholder: {
         color: "#959595",
     }, 
-    botaoVerde: {
-        marginTop: 60,
-        height: 55,
-        backgroundColor: 'green',
-        padding: 15,
-        borderRadius: 15,
-    }, 
-    textoBotao: {
-        fontSize: 15,
-        color: "#fff",
-        fontWeight: "600",
-        textAlign: "center",
-    },
-    
-})
-
+}
 
 export default Login;

@@ -3,32 +3,35 @@ import { StatusBar } from "expo-status-bar";
 import { useCallback, useEffect, useState, useContext } from "react";
 import { Text, View, StyleSheet, TouchableOpacity, TextInput, Button, KeyboardAvoidingView, Platform, TouchableHighlight} from "react-native"
 import { UserContext } from "../../contexts/UserContext";
+import { useAsyncStorage } from "@react-native-async-storage/async-storage";
 
 import api from "../../api/api";
 // //import obj from api
 function Signin() {    
     const [userInfo, setUserInfo] = useContext(UserContext);
-
-    const [userInput, setUserInput] = useState({
+    const AsyncStorage = useAsyncStorage('booklit-auth');
+    const [userAuth, setUserAuth] = useState({
         name: "",
         email: "",
         username: "",
         password: "",
     });
-
-    const [name, setName] = useState("");
-    const [email, setEmail] = useState("");
-    const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
+    
+    const [fieldsValidation, setFieldsValidation] = useState({
+        username: null,
+        usernameMessage: "",
+        password: null,
+        passwordMessage: "",
+    });
 
     const [userExists, setUserExists] = useState(false);
     
     const checkUserExists = async () => {
         try {
-            const res = await api.post("/auth/checkUser", { "username": username });
+            const res = await api.post("/auth/checkUser", { "username": userAuth.username });
             setUserExists(res.data.cadastrado);
-            if(res.data.cadastrado) console.log(username + " existe no db");
-            else console.log(username + " nao existe no db");
+            if(res.data.cadastrado) console.log(userAuth.username + " existe no db");
+            else console.log(userAuth.username + " nao existe no db");
         } catch (err) {
             console.log(err.message);
         }
@@ -36,21 +39,21 @@ function Signin() {
     
     async function registerUser(){
         let body = {
-            "username": username,
-            "email": email,
-            "password": password, 
-            "nome": name,
+            "username": userAuth.username,
+            "email": userAuth.email,
+            "password": userAuth.password, 
+            "nome": userAuth.name,
         }
         const res = await api.post("/auth/signup", body);
         if(res && res.data.cadastro_feito && res.data.token){
             let authData = {
-                "username": username,
+                "username": userAuth.username,
                 "token": res.data.token,
             }
             let authDataString = JSON.stringify(authData);
-            await AsyncStorage.setItem('booklit-auth', authDataString);
+            await AsyncStorage.setItem(authDataString);
             setUserInfo({
-                "username": username,
+                "username": userAuth.username,
                 "token": res.data.token,
                 "isLoggedIn": true
             })
@@ -60,7 +63,10 @@ function Signin() {
 
     // NAO ESQUECER DE COLOCAR ISSO P RODAR
     function handleUsernameInput(text){
-        setUsername(text);
+        setUserAuth({
+            ...userAuth,
+            username: text,
+        })
 
         if(text.length > 30){
             return setFieldsValidation({
@@ -98,63 +104,82 @@ function Signin() {
     };
 
     return (
-        <View style={styles.screen} >
+        <View className="bg-black flex-1 justify-between p-8 py-16">
             <StatusBar backgroundColor="#000" style="light"/>
             <KeyboardAvoidingView
                 style={{flex: 1}}
                 behavior={Platform.OS === "ios" ? "padding" : "height"}
             >
-                <Text style={styles.textoInscrevaSe}> Inscreva-se ja e comece a{"\n"}usar o booklit! </Text>
-                <View style={styles.inputView}>
+                <Text className="text-white text-base font-semibold text-center"> 
+                    Inscreva-se ja e comece a{"\n"}usar o booklit! 
+                </Text>
+                <View className="mt-10 border border-input-gray rounded-xl h-14 w-full">
                     <TextInput
-                        style={styles.inputText}
-                        value={name}
+                        className="p-4 text-white flex-1"
+                        value={userAuth.name}
+                        textContentType="name"
                         placeholder="Insira seu nome"
                         placeholderTextColor={styles.placeholder.color}
-                        onChangeText={ (text) => setName(text) }
+                        onChangeText={ (text) => setUserAuth({
+                            ...userAuth,
+                            name: text,
+                        })}
                     />
                 </View>
                 <View>
-                    <View style={styles.inputView}>
+                    <View className="mt-10 border border-input-gray rounded-xl h-14 w-full">
                         <TextInput
-                            style={styles.inputText}
-                            value={username}
+                            className="p-4 text-white flex-1"
+                            value={userAuth.username}
+                            textContentType="nickname"
                             placeholderTextColor={styles.placeholder.color}
                             placeholder="Insira seu nome de usuário"
-                            onChangeText={ (text) => { setUsername(text) }}
+                            onChangeText={ handleUsernameInput }
                             onEndEditing={ checkUserExists }
                         />
                     </View>
                     <UserExistsMessage exists={userExists}/>
                 </View>
-                <View style={styles.inputView}>
+                <View className="mt-10 border border-input-gray rounded-xl h-14 w-full">
                     <TextInput
-                        style={styles.inputText}
-                        value={email}
+                        className="p-4 text-white flex-1"
+                        value={userAuth.email}
+                        textContentType="emailAddress"
                         placeholderTextColor={styles.placeholder.color}
                         placeholder="Insira seu email"
-                        onChangeText={ (text) => setEmail(text) }
+                        onChangeText={ (text) => setUserAuth({
+                            ...userAuth,
+                            email: text,
+                        }) }
                     />
                 </View>
-                <View style={styles.inputView}>
+                <View className="mt-10 border border-input-gray rounded-xl h-14 w-full">
                     <TextInput
+                        className="p-4 text-white flex-1"
+                        value={userAuth.password}
+                        textContentType="password"
                         secureTextEntry={true}
-                        style={styles.inputText}
-                        value={password}
                         placeholderTextColor={styles.placeholder.color}
                         placeholder="Insira sua senha"
-                        onChangeText={ (text) => setPassword(text) }
+                        onChangeText={ (text) => setUserAuth({
+                            ...userAuth,
+                            password: text,
+                        }) }
                     />
                 </View>
                 <TouchableHighlight
                     onPress={ registerUser }
-                    style={styles.botaoVerde} underlayColor="#0C3D0A">
-                    <Text style={styles.textoBotao}>Criar conta</Text>
+                    className="p-4 h-14 rounded-xl bg-main-green/75 justify-center mt-20" underlayColor="#0C3D0A">
+                    <Text className="text-base text-white font-semibold text-center">Criar conta</Text>
                 </TouchableHighlight>
             </KeyboardAvoidingView>
             <Link href="/Login" replace asChild>
                 <TouchableOpacity>
-                    <Text style={styles.textoCriarConta}>Já possui uma conta? <Text style={[styles.textoCriarConta, {color: "#0066dd"}]}>Entre</Text> ao invés disso</Text>
+                    <Text className="text-sm text-white font-normal text-center">
+                        Já possui uma conta? 
+                        <Text className="text-azul-azulado"> Entre </Text> 
+                        ao invés disso
+                    </Text>
                 </TouchableOpacity>
             </Link>
             <StatusBar backgroundColor="black" style="inverted"/>
@@ -163,60 +188,11 @@ function Signin() {
 }
 
 
-const styles = StyleSheet.create({
-    textoInscrevaSe: {
-        color: "white",
-        fontSize: 16,
-        fontWeight: "600",
-        textAlign: "center",
-    }, 
-    screen: {
-        backgroundColor: "black",
-        flex: 1,
-        justifyContent: "space-between",
-        padding: 30,
-        paddingVertical: 60,
-    },
-    textWhite: {
-        color: "white"
-    },
-    textoCriarConta: {
-        fontSize: 14,
-        color: "#fff",
-        fontWeight: "400",
-        textAlign: "center",
-    },
-    inputView: {
-        marginTop: 40,
-        borderColor: "#959595",
-        borderWidth: 1.5,
-        padding: 15,
-        borderRadius: 15,
-        height: 55,
-        width: "100%",
-    },
-    inputText: {
-        color:"white",
-        flex: 1,
-    },
+const styles = {
     placeholder: {
         color: "#959595",
     }, 
-    botaoVerde: {
-        marginTop: 80,
-        height: 55,
-        backgroundColor: 'green',
-        padding: 15,
-        borderRadius: 15,
-    }, 
-    textoBotao: {
-        fontSize: 15,
-        color: "#fff",
-        fontWeight: "600",
-        textAlign: "center",
-    },
-    
-})
+}
 
 
 export default Signin;

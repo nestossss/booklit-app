@@ -30,7 +30,7 @@ export default function Busca(){
             return <LivroCard
                 googleId={item.id}
                 title={item.volumeInfo.title} 
-                imageUrl={item.volumeInfo?.imageLinks?.thumbnail} 
+                imageUrl={item.volumeInfo?.imageLinks?.thumbnail.replace('http://', 'https://')}
                 authors={item.volumeInfo?.authors}
             />
         }

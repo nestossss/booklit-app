@@ -2,8 +2,10 @@ import { useContext, useEffect, useState } from "react";
 import { StyleSheet, View, Text, FlatList } from "react-native";
 import { UserContext } from "../../../contexts/UserContext";
 import { useNavigation } from "expo-router";
+import { styled } from 'nativewind'
 export default function HomeScreen(){
-    
+    View = styled(View);
+
     let [userInfo] = useContext(UserContext);
 
     return (

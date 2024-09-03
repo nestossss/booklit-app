@@ -6,7 +6,7 @@ export default function LivroEncontrado({livro}){
       <View style={styles.container}>
          <View style={styles.imgThumbnail}>
             <Image source={{
-               uri: imageUrl? imageUrl : "http://books.google.com/books/content?id=tRl6DwAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+               uri: imageUrl.replace('http://', 'https://')
             }} style={styles.image}/>
          </View>
          <Text style={{color: "white"}} numberOfLines={3}>{title}</Text>

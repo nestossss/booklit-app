@@ -9,11 +9,11 @@ function LivroCard({
    authors,
 }){
    return (
-      <Link push href={`/InfoLivro/${googleId}`}>
+      <Link push href={`/InfoLivro?googleId=${googleId}`}>
          <View style={styles.container}>
             <View style={styles.imgThumbnail}>
                <Image source={{
-                  uri: imageUrl? imageUrl : "http://books.google.com/books/content?id=tRl6DwAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+                  uri: imageUrl? imageUrl : "https://books.google.com/books/content?id=tRl6DwAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
                }} style={styles.image}/>
             </View>
             <Text style={styles.textTitle} numberOfLines={2}>{title}</Text>

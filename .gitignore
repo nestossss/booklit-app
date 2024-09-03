@@ -35,3 +35,8 @@ yarn-error.*
 # typescript
 *.tsbuildinfo
 
+#editor-options
+.vscode/
+
+#??? nem ideia do pq isso ta aqui sjadiojoawj
+%ProgramData%/

@@ -1,6 +1,6 @@
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 
-import { useState } from 'react';
+import { useContext, useState, useEffect, useCallback } from 'react';
 import { Image, View, StyleSheet} from 'react-native';
 
 import SendoLidos from '../../screens/Books/SendoLidos';
@@ -9,6 +9,10 @@ import Terminados from '../../screens/Books/Terminados';
 
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
+import { LibContext } from '../../../contexts/LibContext';
+import { useFocusEffect } from 'expo-router';
+import api from '../../../api/api';
+import { UserContext } from '../../../contexts/UserContext';
 
 //<MaterialCommunityIcons name="bookshelf" size={24} color="black" />
 
@@ -17,9 +21,10 @@ import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 const Tab = createMaterialTopTabNavigator();
 
 function BooksScreens(){
+   
    return (
          <View style={{ flex: 1 }}>
-            <Tab.Navigator 
+            <Tab.Navigator
                initialRouteName='SendoLidos'
                screenOptions={{
                   tabBarShowLabel: false,
