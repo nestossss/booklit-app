@@ -47,7 +47,7 @@ export default function MainLayout(){
                headerShown: false,
                tabBarIcon: ({focused}) => <FontAwesome5 name={focused? 'book-open' : 'book'} size={18} color='#47A538' />,
                tabBarLabel: 'Livros',
-               title: "Olá "+ userInfo.username}}
+            }}
          />
          <Tabs.Screen
             name="Busca"
@@ -55,7 +55,7 @@ export default function MainLayout(){
                headerShown: false,
                tabBarIcon: ({focused}) => <Ionicons name='search' size={focused? 24 : 18} color='#47A538'/>,
                tabBarLabel: 'Busca',
-               title: "Olá "+ userInfo.username}}
+            }}
          />
          
          <Tabs.Screen

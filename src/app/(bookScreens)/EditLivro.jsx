@@ -8,6 +8,7 @@ import { LoadingScreen } from "../../components/LoadingScreen";
 import { useContext, useEffect, useState } from "react";
 import api from "../../api/api";
 import { UserContext } from "../../contexts/UserContext";
+import { useChangesMade } from "../../hooks/useChangesMade";
 
 export default function EditLivro(){
    
@@ -28,6 +29,8 @@ export default function EditLivro(){
    const [pagLidas, setPagLidas] = useState(0);
    const [totalPag, setTotalPag] = useState(0);
    const [bookStatus, setBookStatus] = useState();
+
+   const [changesMade, setChangesMade] = useChangesMade();
    
    useEffect( () => {
       setBookStatus(statusParams)
@@ -97,12 +100,12 @@ export default function EditLivro(){
       let body =  {
          bookUrl: googleId
       };
-      let res = await api.get('/lib/registro?bookUrl='+googleId, { headers }).catch( (err) => console.log(err))
+      let res = await api.get('/lib/registro?bookUrl='+googleId, { headers }).catch( (err) => { console.log("handle salvar"); console.log(err) })
       let idlivro = res?.data?.registro?.idlivro;
       console.log(idlivro)
 
       if(!idlivro){
-         res = await api.put('/lib/adicionar/existente', body, { headers }).catch( (err) => console.log(err))
+         res = await api.put('/lib/adicionar/existente', body, { headers }).catch( (err) => { console.log("handle salvar 2"); console.log(err) })
          idlivro = res?.data?.registro?.livro?.idlivro;
          console.log(idlivro)
       }
@@ -113,8 +116,9 @@ export default function EditLivro(){
          'tempoLido': tempoLido,
       }
       console.log('tempoLido: ', tempoLido, "paginas: ", pagLidas)
-      res = await api.put('/lib/atualizar?id='+idlivro, body, { headers }).catch( (err) => console.log(err) )
+      res = await api.put('/lib/atualizar?id='+idlivro, body, { headers }).catch( (err) => { console.log("handle salvar 3"); console.log(err)} )
       if(res?.data?.status != 200) return console.log('erro ao salvar 2');
+      setChangesMade(true);
       return router.navigate({
             pathname: '/ViewSavedBook',
             params: {

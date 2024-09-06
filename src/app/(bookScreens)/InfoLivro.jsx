@@ -32,7 +32,7 @@ export default function InfoLivro(){
    const [book, setBook] = useState();
    const [isLivroSalvo, setLivroSalvo] = useState(null);
 
-   const [livroId, setLivroId] = useState(0);
+   const [livroId, setLivroId] = useState(null);
    const [pagLidas, setPagLidas] = useState(0);
    const [tempoLido, setTempoLido] = useState(0);
 
@@ -42,7 +42,7 @@ export default function InfoLivro(){
    const { googleId } = useLocalSearchParams();
    
    const getBook = async (signal) => {
-      let res = await axios.get(`https://www.googleapis.com/books/v1/volumes/${googleId}`, { signal }).catch( (reason) => { console.log(reason)});
+      let res = await axios.get(`https://www.googleapis.com/books/v1/volumes/${googleId}`, { signal }).catch( (reason) => { console.log("getBook"); console.log(reason)});
       let volumeInfo = res?.data?.volumeInfo;
       if(volumeInfo){
          return setBook(volumeInfo);
@@ -58,7 +58,7 @@ export default function InfoLivro(){
          headers: {
             Authorization: 'Bearer '+ userInfo.token,
          }
-      }).catch( (err) => { console.log(err)} );
+      }).catch( (err) => {console.log("getRegistro"); console.log(err)} );
 
       if(res?.data?.registro){ 
          console.log(tempoLido, '>', res.data.registro.tempo_lido)
@@ -75,31 +75,33 @@ export default function InfoLivro(){
 
 
    async function adicionar(signal) {
+      if(livroId == null) return;
       let body = {
          'bookUrl': googleId,
       };
       let headers = {
          Authorization: "Bearer "+ userInfo.token
       }
-
+      
       let res = await api.put('/lib/adicionar/existente', body, { headers, signal })
-      .catch( (err) => console.log(err) );
-      console.log(res.data);
+      .catch( (err) => {console.log("adicionar"); console.log(err)} );
+      console.log(res?.data);
       if(res?.data?.registro?.livro?.idlivro){
          setLivroId(res.data.registro.livro.idlivro);
       }   
-      if(res.status != 200){
+      if(res?.status != 200 || !res){
          setLivroSalvo(false)
       }
    }
 
    async function deletar(signal){
+      if(livroId == null) return;
       let headers = {
          Authorization: "Bearer "+ userInfo.token
       }
-      let res = await api.delete(`/lib/remover?bookId=${livroId}`, { headers, signal  }).catch( err => console.log(err));
-      console.log(res.data);
-      if(res.status != 200){
+      let res = await api.delete(`/lib/remover?bookId=${livroId}`, { headers, signal  }).catch( err =>  {console.log("deletar 1"); console.log(err)});
+      console.log(res?.data);
+      if(res?.status != 200 || !res){
          setLivroSalvo(true);
       }
       setChangesMade(true);
@@ -109,9 +111,10 @@ export default function InfoLivro(){
       const controller = new AbortController();
       const signal = controller.signal;
 
-      if(isLivroSalvo) adicionar(signal);
-
-      if(!isLivroSalvo) deletar(signal);
+      if(isLivroSalvo != null){
+         if(isLivroSalvo) adicionar(signal);
+         if(!isLivroSalvo) deletar(signal);
+      }
       
       return () => {
          controller.abort();

@@ -3,7 +3,7 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 import HomePage from './HomePage';
 
 
-import { Image, ScrollView, StyleSheet, View } from 'react-native';
+import { Dimensions, Image, ScrollView, StyleSheet, View } from 'react-native';
 import Estatisticas from '../../screens/Home/Estatisticas';
 import ContinuarLendo from '.';
 import Metas from '../../screens/Home/Metas';
@@ -16,7 +16,7 @@ const Tab = createMaterialTopTabNavigator();
 function HomeLayout(){
    return (
       <View>
-         <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollView}>
+         <ScrollView style={styles.scrollView} nestedScrollEnabled contentContainerStyle={styles.scrollView}>
             <Tab.Navigator 
                initialRouteName='ContinuarLendo'
                screenOptions={{
@@ -43,7 +43,7 @@ function HomeLayout(){
                   },
                   tabBarAccessibilityLabel: 'Barra de navegação'
                }}
-               style={{minHeight: 500}}
+               style={{minHeight: Dimensions.get('screen').width*1.8}}
             >
                <Tab.Screen 
                   name='ContinuarLendo' 

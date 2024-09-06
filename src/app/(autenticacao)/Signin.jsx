@@ -33,6 +33,7 @@ function Signin() {
             if(res.data.cadastrado) console.log(userAuth.username + " existe no db");
             else console.log(userAuth.username + " nao existe no db");
         } catch (err) {
+            console.log("check user");
             console.log(err.message);
         }
     }

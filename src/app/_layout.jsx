@@ -9,8 +9,6 @@ import { ChangesMadeContext } from "../contexts/ChangesMadeContext";
 
 export default function root(){
    
-   const [changesMade, setChangesMade] = useState(true);
-
    const [userInfo, setUserInfo] = useState({
       username: null,
       email: null,
@@ -19,10 +17,12 @@ export default function root(){
    }); // puxar isso do localStorage dps 
    
    const [lib, setLib] = useState({
-      salvos: null, // []
-      terminados: null, // []
-      sendoLidos: null, // [] 
+      salvos: [], // []
+      terminados: [], // []
+      sendoLidos: [], // [] 
    })
+
+   const [changesMade, setChangesMade] = useState(true);
 
    return (
       <ChangesMadeContext.Provider value={[changesMade, setChangesMade]}>

@@ -24,7 +24,7 @@ export default function EditLivro(){
    const [tempoLido, setTempoLido] = useState();
 
    const getBook = async () => {
-      let res = await axios.get(`https://www.googleapis.com/books/v1/volumes/${googleId}`).catch( (reason) => { console.log(reason)});
+      let res = await axios.get(`https://www.googleapis.com/books/v1/volumes/${googleId}`).catch( (reason) => { console.log("getBook EditLivro"); console.log(reason)});
       let volumeInfo = res?.data?.volumeInfo;
       if(volumeInfo){
          return setBook(volumeInfo);
@@ -38,7 +38,7 @@ export default function EditLivro(){
          headers: {
             Authorization: 'Bearer '+ userInfo.token,
          }
-      }).catch( (err) => { console.log(err)} );
+      }).catch( (err) => { console.log("getRegistro EditLivro"); console.log(err)} );
 
       if(res.data?.registro){
          setPaginasLidas(res.data.registro.paginas_lidas);

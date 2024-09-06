@@ -6,10 +6,7 @@ import { styled } from 'nativewind'
 import { useLib } from "../../../hooks/useLib";
 import { ContinueLendo } from "../../../components/ContinueLendo"
 
-export default function ContinuarLendoHome(){
-    const [userInfo] = useContext(UserContext);
-    const [lib] = useLib();
-    
+export default function ContinuarLendoHome(){    
     
     return (
         <>
