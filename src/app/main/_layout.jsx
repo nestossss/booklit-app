@@ -33,12 +33,9 @@ export default function MainLayout(){
          <Tabs.Screen
             name="Home"
             options={{
-               header: ({ navigation }) => {
-                  return  <HeaderHome router={navigation} text={`Olá, ${userInfo.username}!`}/>
-               },
                tabBarIcon: ({focused}) => <Ionicons name={focused? "home-sharp": 'home-outline' } size={24} color='#47A538'/>,
                tabBarLabel: 'Home',
-               title: "Olá "+ userInfo.username,
+               headerShown: false,
             }}
          />
          <Tabs.Screen

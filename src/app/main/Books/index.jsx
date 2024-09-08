@@ -27,6 +27,10 @@ function BooksScreens(){
             <Tab.Navigator
                initialRouteName='SendoLidos'
                screenOptions={{
+                  tabBarPressColor: "#00000000",
+                  tabBarIndicatorStyle: {
+                     display: 'none'
+                  },
                   tabBarShowLabel: false,
                   tabBarShowIcon: true,
                   tabBarStyle: {

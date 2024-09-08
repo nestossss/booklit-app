@@ -5,21 +5,32 @@ import HomePage from './HomePage';
 
 import { Dimensions, Image, ScrollView, StyleSheet, View } from 'react-native';
 import Estatisticas from '../../screens/Home/Estatisticas';
-import ContinuarLendo from '.';
+import ContinuarLendoHome from '.';
 import Metas from '../../screens/Home/Metas';
 import Streak from '../../screens/Home/Streak';
 
 import FontAwesome5  from '@expo/vector-icons/FontAwesome5';
+import { useState } from 'react';
+import { HeaderHome } from '../../../components/HeaderHome';
 
 const Tab = createMaterialTopTabNavigator();
 
 function HomeLayout(){
+   const [isInHome, setIsInHome] = useState(false);
+
    return (
       <View>
-         <ScrollView style={styles.scrollView} nestedScrollEnabled contentContainerStyle={styles.scrollView}>
-            <Tab.Navigator 
+         <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollView}>
+            <HeaderHome />
+            <Tab.Navigator
+               
                initialRouteName='ContinuarLendo'
                screenOptions={{
+                  tabBarPressColor: "#00000000",
+                  tabBarIndicatorStyle: {
+                     display: 'none'
+                  },
+                  swipeEnabled: false,
                   tabBarStyle: {
                      backgroundColor: '#47A538',
                   },
@@ -41,13 +52,13 @@ function HomeLayout(){
                      width: 50,
                      height: 50,
                   },
-                  tabBarAccessibilityLabel: 'Barra de navegação'
+                  tabBarAccessibilityLabel: 'Barra de navegação',
                }}
                style={{minHeight: Dimensions.get('screen').width*1.8}}
             >
                <Tab.Screen 
                   name='ContinuarLendo' 
-                  component={ContinuarLendo} 
+                  component={ContinuarLendoHome}
                   options={{
                      tabBarIcon: ({focused}) => 
                         focused? 

@@ -1,12 +1,14 @@
 import { View, Text, StyleSheet, StatusBar } from 'react-native'
 import { StatusBar as StatusBarExpo } from 'expo-status-bar';
+import { useSession } from '../hooks/useSession';
 
 export function HeaderHome({text}){
-
+   const [userInfo, setUserInfo] = useSession();
+   
    return (
       <View style={styles.headerContainer}>
          <StatusBarExpo style='light' backgroundColor='#000'/>
-         <Text style={styles.headerText} numberOfLines={1}>{text}</Text>
+         <Text style={styles.headerText} numberOfLines={1}>Olá, {userInfo.username}</Text>
       </View>
    )
 }
