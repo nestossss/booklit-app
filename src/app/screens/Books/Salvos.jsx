@@ -27,7 +27,7 @@ export default function Salvos(){
     }, [] ) );
     
     return (
-        <View style={styles.screen}>
+        <View className="bg-screen-black" style={styles.screen}>
             <Text> Livros Salvos </Text>
              <FlatList 
                 data={ lib.salvos }
@@ -40,7 +40,6 @@ export default function Salvos(){
 
 const styles = StyleSheet.create({
    screen: {
-       backgroundColor: "black",
        flex: 1,
        justifyContent: "center",
        alignItems: "center",

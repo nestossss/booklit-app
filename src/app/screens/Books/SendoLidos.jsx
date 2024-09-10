@@ -13,14 +13,13 @@ export default function SendoLidos(){
     }, [] ) );
 
     return (
-        <View style={styles.screen}>
+        <View className="bg-screen-black" style={styles.screen}>
             <Text> oi </Text>
         </View>
     )
 }
 const styles = StyleSheet.create({
    screen: {
-       backgroundColor: "black",
        flex: 1,
        justifyContent: "center",
        alignItems: "center",

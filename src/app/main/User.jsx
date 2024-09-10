@@ -9,7 +9,7 @@ export default function User(){
     }
 
     return (
-        <View style={styles.screen}>
+        <View className="bg-screen-black" style={styles.screen}>
             <Text style={styles.text}>Tela de usuario</Text>
             <Button onPress={() => {
                 fazerLogout();
@@ -20,7 +20,6 @@ export default function User(){
 }
 const styles = StyleSheet.create({
    screen: {
-       backgroundColor: "black",
        flex: 1,
        justifyContent: "center",
        alignItems: "center",

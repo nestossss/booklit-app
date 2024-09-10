@@ -37,7 +37,7 @@ export default function Busca(){
     }
 
     return (
-        <View style={styles.screen}>
+        <View className="bg-screen-black" style={styles.screen}>
             <ScrollView style={{ minHeight: 125, maxHeight: 150, }} keyboardShouldPersistTaps="handled" contentContainerStyle={styles.searchContainer}>
             <View style={styles.inputContainer}>
                 <View style={{height: "100%", aspectRatio: 1, justifyContent: 'center', alignItems: 'center'}}>
@@ -73,7 +73,6 @@ export default function Busca(){
 const styles = StyleSheet.create({
     screen: {
         paddingTop: StatusBar.currentHeight,
-        backgroundColor: "black",
         flex: 1,
     },
     searchContainer: {

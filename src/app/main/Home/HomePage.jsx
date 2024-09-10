@@ -31,17 +31,18 @@ export default function HomePage(){
         setBookList(resBooksOk);
     }
 
-    const renderBookList = ({item}) => {
-        return <LivroCard key={item.id} googleId={item.id} title={item.volumeInfo.title} imageUrl={item.volumeInfo?.imageLinks?.thumbnail.replace('http://', 'https://')} authors={item.volumeInfo?.authors}/>
+    const renderBookList = ({item, index}) => {
+        return <LivroCard index={index} key={item.id} googleId={item.id} title={item.volumeInfo.title} imageUrl={item.volumeInfo?.imageLinks?.thumbnail.replace('http://', 'https://')} authors={item.volumeInfo?.authors}/>
     }
 
     if(!bookList){
         return <LoadingScreen/>
     }
     return (
-        <View style={styles.screen}>
-            <Text>Livros</Text>
+        <View className="bg-screen-black justify-center items-center" >
+            <Text className="w-11/12 text-xl text-white font-semibold mb-4 mt-4">recomendacoes</Text>
             <FlatList
+                className="w-11/12"
                 horizontal
                 data={bookList}
                 renderItem={ renderBookList }
@@ -50,16 +51,3 @@ export default function HomePage(){
         </View>
     )
 }
-const styles = StyleSheet.create({
-   screen: {
-       backgroundColor: "black",
-       justifyContent: "center",
-       alignItems: "center",
-   },
-   text: {
-        width:'100%',
-        textAlign: "center", 
-        fontSize: 18,
-        color: "white",
-   },
-})

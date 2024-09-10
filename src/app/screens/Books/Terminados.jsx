@@ -14,7 +14,7 @@ export default function Terminados(){
 
     if(lib.terminados && lib.terminados.length > 0)
     return (
-        <View style={styles.screen}>
+        <View className="bg-screen-black" style={styles.screen}>
             {lib.terminados.length > 0? lib.terminados.map( (item) => {
                 return <Link key={item.livro.bookUrl} asChild href={'/InfoLivro?googleId='+item.livro.bookUrl}>
                     <View style={styles.book}> 
@@ -28,7 +28,6 @@ export default function Terminados(){
 }
 const styles = StyleSheet.create({
    screen: {
-       backgroundColor: "black",
        flex: 1,
        justifyContent: "center",
        alignItems: "center",

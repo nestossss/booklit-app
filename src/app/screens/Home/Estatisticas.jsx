@@ -2,14 +2,13 @@ import { StyleSheet, View, Text } from "react-native";
  
 export default function Estatisticas(){
     return (
-        <View style={styles.screen}>
+        <View className="bg-screen-black" style={styles.screen}>
             <Text style={styles.text} numberOfLines={1}>Bem vindo as estatisticas</Text>
         </View>
     )
 }
 const styles = StyleSheet.create({
    screen: {
-       backgroundColor: "black",
        flex: 1,
        justifyContent: "center",
        alignItems: "center",
