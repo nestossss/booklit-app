@@ -12,7 +12,7 @@ module.exports = {
         'azul-azulado': '#0066dd',
         'input-gray': "#959595",
         "yellow-green": "#C1D9A9",
-        "screen-black": "#080808"  
+        "screen-black": "#101010"  
       },
     },
   },

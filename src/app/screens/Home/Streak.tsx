@@ -1,10 +1,13 @@
-import { useEffect, useState } from "react";
-import { View, Text, Image, ScrollView } from "react-native";
-import { StreakData, StreakDay, StreakMonth } from "../../../util/types";
+import { useCallback, useEffect, useState } from "react";
+import { View, Text, Image, ScrollView, Dimensions, TouchableHighlight } from "react-native";
 import { getDateWithoutTime } from "../../../util/date";
-import api from "../../../api/api";
 import { useSession } from "../../../hooks/useSession";
 import { StreakWeek } from "../../../components/StreakWeek";
+import { StreakInfo } from "../../../components/StreakInfo";
+import api from "../../../api/api";
+
+import type { StreakData, StreakDay, StreakMonth } from "../../../util/types";
+import type { Dispatch, SetStateAction } from "react";
 
 const onFireIcon = require('../../../../assets/icons/fire-on-icon.png');
 const offFireIcon = require('../../../../assets/icons/fire-on-icon.png');
@@ -13,19 +16,43 @@ const weekdaysString = ["D", "S", "T", "Q", "Q", "S", "S"]
 const monthsString = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
 
 
-export default function Streak(){
-
-    //const [networkError, setNetworkError] = useState();
+export default function Streak({navigation, setFocusHeight}){
+    
     const [session] = useSession();
-    const [streakMonths, setStreakMonths]:[StreakMonth[] | null, React.Dispatch<React.SetStateAction<StreakMonth[]>>] = useState(null);
+    const [streakMonths, setStreakMonths]:[StreakMonth[] | null, Dispatch<SetStateAction<StreakMonth[]>>] = useState(null);
     const [lastStreak, setLastStreak] = useState(null);
-    const today = getDateWithoutTime(new Date(Date.now()));
-    const yesterday = getDateWithoutTime(new Date(Date.now()-86400000))
+    const [selectedMonth, setSelectedMonth]: [number, Dispatch<SetStateAction<number>>]= useState(0);
+
+    const [expanded, setExpanded] = useState(false); 
+    const yesterday = getDateWithoutTime(new Date(Date.now()-86400000));
+
+    useEffect( () => {                //no futuro: 'tabPress' 
+        const adjustHeight = navigation.addListener('focus', (e) => {
+            //no futuro: startAnim() logica da animacao;
+            setFocusHeight(Dimensions.get('screen').height*0.35);
+        })
+        const blurListener = navigation.addListener('blur', () => {
+            setExpanded(false);
+        })
+
+        return () => {
+            blurListener();
+            adjustHeight()
+        }
+    }, []);
+
+    useEffect(() => {
+        if(expanded){
+            setFocusHeight(Dimensions.get('screen').height*0.7)
+        } else {
+            setFocusHeight(Dimensions.get('screen').height*0.35)
+        }
+    },[expanded])
 
     useEffect( () => {
         const controller = new AbortController();
         const signal = controller.signal
-
+    
         async function fetchStreak(){
             let headers = {
                 Authorization: 'Bearer '+session.token 
@@ -45,7 +72,6 @@ export default function Streak(){
                 // streaks = formatStreaks(streaks);
                 setLastStreak( getDateWithoutTime(streakDataList[streakDataList.length-1].end) )
                 console.log(streakDataList[streakDataList.length-1].end);
-                console.log(yesterday);
                 return setStreakMonths( formatStreak(streakDataList) );
             }
             return setStreakMonths([]);
@@ -68,31 +94,39 @@ export default function Streak(){
     }
 
     return (
-        <View className="flex-1 bg-screen-black justify-center items-center py-6"> 
+        <View className={"flex-1 bg-screen-black justify-center items-center py-6"}> 
             <View className="flex-1 w-11/12 rounded-xl bg-black p-3">
-                <View className="flex-row h-1/2">
-                    <View className="h-16 w-16">
-                        <Image source={lastStreak.getTime() == today.getTime() || lastStreak.getTime() == yesterday.getTime()? onFireIcon : offFireIcon} className="w-full h-full" />
-                    </View>
+                <StreakInfo expanded={expanded} setExpanded={setExpanded} lastStreak={lastStreak}/>
+                {
+                !expanded?
+                    <StreakWeek months={streakMonths}/>
+                :
                     <View>
-                        <Text
-                            className="text-white font-bold" 
-                            style={{ display: lastStreak.getTime() == today.getTime() || lastStreak.getTime() == yesterday.getTime()? "flex" : 'none'}}
-                        >
-                                { /* quantidade streak */} 1
-                        </Text>
-                        <Text className="text-zinc-600 flex-1">
-                            { lastStreak.getTime() == today.getTime()? 
-                                "Sequencia diária" 
-                                :  
-                                lastStreak.getTime() == yesterday.getTime()? 
-                                "Continue sua sequencia"
-                                :
-                                "Comece sua sequência de leitura"}
-                        </Text>
+                        <View className="w-full flex-row justify-center">
+                            <View>
+                                <Text className="text-white text-lg font-semibold">
+                                    Trilha Mensal
+                                </Text>
+                                <View>
+                                    <Text className="text-zinc-500 font-bold text-base">
+                                        {monthsString[streakMonths[selectedMonth].monthIndex]} {streakMonths[selectedMonth].year}
+                                    </Text>
+                                    <View>
+                                        <TouchableHighlight>
+                                            <View></View>
+                                        </TouchableHighlight> 
+                                        <TouchableHighlight>
+                                            <View></View>
+                                        </TouchableHighlight>
+                                    </View>
+                                </View>
+                            </View>
+                            <View>
+
+                            </View>
+                        </View>
                     </View>
-                </View>
-                <StreakWeek months={streakMonths}/>
+                }
             </View>
         </View>
     )

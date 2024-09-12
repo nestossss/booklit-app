@@ -4,6 +4,7 @@ import React, { SetStateAction, useEffect, useState } from "react";
 import { StreakMonth, StreakDay } from "../util/types"
 import { Image, Text, View } from "react-native";
 
+const weekdaysString = ["D", "S", "T", "Q", "Q", "S", "S"]
 const checkIcon  = require("../../assets/icons/check-small.png")
 const crossIcon = require("../../assets/icons/close-small.png");
 
@@ -78,15 +79,15 @@ function StreakWeek({months}: {
     }
 
     return (
-      <View className="w-full h-1/3 flex-row justify-between">
+      <View className="w-full h-1/2 flex-row justify-between">
          { ultimaSemana.map((day) => {
-            return <View className="w-6 h-12">
+            return <View className="w-5 h-10">
                   <View className={"rounded-xl "+
                   (  
                      day.status == 'checked'? 
-                        "bg-streak-made-green p-1 w-6 h-6" 
+                        "bg-streak-made-green p-0.5 w-5 h-5" 
                      : day.status == 'unchecked'?
-                        "bg-red-500 p-1 w-6 h-6"
+                        "bg-red-500 p-0.5 w-5 h-5"
                      :
                         ""
                   )
@@ -97,8 +98,9 @@ function StreakWeek({months}: {
                      :
                         crossIcon
                      } />
-                     <View className="rounded-xl w-6 h-6 bg-gray-400 border-gray-500 border-2" style={{ display: day.status == null? "flex" : "none"}}></View>
+                     <View className="rounded-xl w-5 h-5 bg-gray-400 border-gray-500 border-2" style={{ display: day.status == null? "flex" : "none"}}></View>
                   </View>
+                  <Text className="mt-1.5 text-base font-extrabold text-center text-white">{weekdaysString[day.weekdayIndex]}</Text>
                </View>
          })}
       </View>

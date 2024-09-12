@@ -48,6 +48,24 @@ export default function HomePage(){
                 renderItem={ renderBookList }
                 keyExtractor={item => item.id}
             />
+
+            <Text className="w-11/12 text-xl text-white font-semibold mb-4 mt-4">recomendacoes</Text>
+            <FlatList
+                className="w-11/12"
+                horizontal
+                data={bookList}
+                renderItem={ renderBookList }
+                keyExtractor={item => item.id}
+            />
+
+            <Text className="w-11/12 text-xl text-white font-semibold mb-4 mt-4">recomendacoes</Text>
+            <FlatList
+                className="w-11/12"
+                horizontal
+                data={bookList}
+                renderItem={ renderBookList }
+                keyExtractor={item => item.id}
+            />
         </View>
     )
 }

@@ -1,12 +1,22 @@
 import { useCallback, useContext, useEffect, useState } from "react";
-import { StyleSheet, View, Text, FlatList, ScrollView } from "react-native";
+import { StyleSheet, View, Text, FlatList, ScrollView, Dimensions } from "react-native";
 import { UserContext } from "../../../contexts/UserContext";
-import { useFocusEffect, useNavigation } from "expo-router";
+
 import { styled } from 'nativewind'
 import { useLib } from "../../../hooks/useLib";
 import { ContinueLendo } from "../../../components/ContinueLendo"
+import { useFocusEffect } from "@react-navigation/native";
 
-export default function ContinuarLendoHome(){    
+export default function ContinuarLendoHome({navigation, setFocusHeight}){
+
+    useEffect( () => {
+        const adjustHeight = navigation.addListener('focus', (e) => {
+            setFocusHeight(Dimensions.get('screen').height*0.8);
+            // startAnim();
+        })
+
+        return adjustHeight
+    }, []);
 
     return (
         <>
