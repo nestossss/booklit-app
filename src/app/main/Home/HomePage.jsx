@@ -1,7 +1,7 @@
 import { useContext, useState, useEffect } from "react";
 import { StyleSheet, View, FlatList, Text } from "react-native";
 import { UserContext } from "../../../contexts/UserContext";
-import { LivroCard } from "../../../components/LivroCard";
+import { LivroHomeCard } from "../../../components/LivroHomeCard";
 
 import axios from "axios";
 import { LoadingScreen } from "../../../components/LoadingScreen";
@@ -32,7 +32,7 @@ export default function HomePage(){
     }
 
     const renderBookList = ({item, index}) => {
-        return <LivroCard index={index} key={item.id} googleId={item.id} title={item.volumeInfo.title} imageUrl={item.volumeInfo?.imageLinks?.thumbnail.replace('http://', 'https://')} authors={item.volumeInfo?.authors}/>
+        return <LivroHomeCard index={index} key={item.id} googleId={item.id} title={item.volumeInfo.title} imageUrl={item.volumeInfo?.imageLinks?.thumbnail.replace('http://', 'https://')} authors={item.volumeInfo?.authors}/>
     }
 
     if(!bookList){

@@ -2,7 +2,7 @@ import { StyleSheet, View, Text, FlatList} from "react-native";
 import { RouteFocusContext } from "../../../contexts/RouteFocusContext";
 import { useCallback, useContext, useEffect} from "react";
 import { useFocusEffect } from "expo-router";
-import { LivroCard } from "../../../components/LivroCard";
+import { LivroHomeCard } from "../../../components/LivroHomeCard";
 
 import { useLib } from "../../../hooks/useLib";
  
@@ -12,7 +12,7 @@ export default function Salvos(){
     const [lib, setLib] = useLib();
 
     function renderSalvos({item}){
-        return <LivroCard
+        return <LivroHomeCard
             key={"idsalvo:"+item.livro.bookUrl}
             googleId={item.livro.bookUrl}
             title={item.livro.titulo} 

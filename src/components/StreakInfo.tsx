@@ -1,6 +1,6 @@
 import { Image, Text, View, TouchableWithoutFeedback} from "react-native"
 import { getDateWithoutTime } from "../util/date";
-import React, { SetStateAction } from "react";
+import React, { SetStateAction, useEffect, useState } from "react";
 
 const onFireIcon = require('../../assets/icons/fire-on-icon.png');
 const offFireIcon = require('../../assets/icons/fire-on-icon.png');
@@ -10,15 +10,15 @@ const StreakInfo = ({expanded, setExpanded, lastStreak, className}:{
    setExpanded: React.Dispatch<SetStateAction<boolean>>
    className?: string
    lastStreak: Date,
+   streakCount: number
 }) => {
-   
-   
+
    function StreakInfoCollapsed() {
       const today = getDateWithoutTime(new Date(Date.now()));
       const yesterday = getDateWithoutTime(new Date(Date.now()-86400000));
    
       return <TouchableWithoutFeedback onPress={ () => {
-         setExpanded(prev => !prev);
+         setExpanded(prev => prev !=null? !prev : true );
       }}>
           <View className={className? className : "flex-row h-1/2"}>
                <View className="h-16 w-16">

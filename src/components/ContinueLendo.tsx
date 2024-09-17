@@ -1,7 +1,6 @@
 import { View, ScrollView, Text, Image, Dimensions, StyleSheet, StatusBar, FlatList, TouchableHighlight } from "react-native"
 import { useLib } from "../hooks/useLib"
 import { SetStateAction, useState } from "react";
-import { Library } from "../contexts/LibContext";
 import { router } from "expo-router";
 
 function ContinueLendo(){

@@ -1,9 +1,12 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { View, Text, Image, ScrollView, Dimensions, TouchableHighlight } from "react-native";
 import { getDateWithoutTime } from "../../../util/date";
 import { useSession } from "../../../hooks/useSession";
 import { StreakWeek } from "../../../components/StreakWeek";
 import { StreakInfo } from "../../../components/StreakInfo";
+import { StreakDaily } from "../../../components/StreakDaily";
+import { StreakWeekMonth } from "../../../components/StreakWeekMonth";
+
 import api from "../../../api/api";
 
 import type { StreakData, StreakDay, StreakMonth } from "../../../util/types";
@@ -22,14 +25,18 @@ export default function Streak({navigation, setFocusHeight}){
     const [streakMonths, setStreakMonths]:[StreakMonth[] | null, Dispatch<SetStateAction<StreakMonth[]>>] = useState(null);
     const [lastStreak, setLastStreak] = useState(null);
     const [selectedMonth, setSelectedMonth]: [number, Dispatch<SetStateAction<number>>]= useState(0);
+    const [streakCount, setStreakCount] = useState();
+    const [expandedOption, setExpandedOption]: ["daily" | "week", Dispatch<SetStateAction<"daily" | "week">>]= useState("daily");
 
-    const [expanded, setExpanded] = useState(false); 
+    const [expanded, setExpanded]: [boolean | null, Dispatch<SetStateAction<boolean>>] = useState(null); 
     const yesterday = getDateWithoutTime(new Date(Date.now()-86400000));
+
+    const [dimensionsScrollView, setDimensionsScrollView] = useState(null)
 
     useEffect( () => {                //no futuro: 'tabPress' 
         const adjustHeight = navigation.addListener('focus', (e) => {
             //no futuro: startAnim() logica da animacao;
-            setFocusHeight(Dimensions.get('screen').height*0.35);
+            setFocusHeight(350);
         })
         const blurListener = navigation.addListener('blur', () => {
             setExpanded(false);
@@ -37,15 +44,16 @@ export default function Streak({navigation, setFocusHeight}){
 
         return () => {
             blurListener();
-            adjustHeight()
+            adjustHeight();
         }
     }, []);
 
     useEffect(() => {
         if(expanded){
-            setFocusHeight(Dimensions.get('screen').height*0.7)
-        } else {
-            setFocusHeight(Dimensions.get('screen').height*0.35)
+            setFocusHeight(450 + (expandedOption == 'daily'? 180 : 120) )
+        } 
+        if(expanded == false){
+            setFocusHeight(350)
         }
     },[expanded])
 
@@ -69,8 +77,18 @@ export default function Streak({navigation, setFocusHeight}){
                         end: new Date(streak.end),
                     }
                 })
+
+                let streakCount = 0;
+
+                let lastStrData = getDateWithoutTime(streakDataList[streakDataList.length-1].end)
+                let firstStrData = getDateWithoutTime(streakDataList[streakDataList.length-1].start)
+                
+                if(lastStrData > yesterday)
+                    streakCount = (lastStrData.getTime() - firstStrData.getTime())/86400000;
+                console.log("streak: ", streakCount);
+
                 // streaks = formatStreaks(streaks);
-                setLastStreak( getDateWithoutTime(streakDataList[streakDataList.length-1].end) )
+                setLastStreak( lastStrData )
                 console.log(streakDataList[streakDataList.length-1].end);
                 return setStreakMonths( formatStreak(streakDataList) );
             }
@@ -96,19 +114,19 @@ export default function Streak({navigation, setFocusHeight}){
     return (
         <View className={"flex-1 bg-screen-black justify-center items-center py-6"}> 
             <View className="flex-1 w-11/12 rounded-xl bg-black p-3">
-                <StreakInfo expanded={expanded} setExpanded={setExpanded} lastStreak={lastStreak}/>
+                <StreakInfo expanded={expanded} setExpanded={setExpanded} lastStreak={lastStreak} streakCount={streakCount}/>
                 {
                 !expanded?
                     <StreakWeek months={streakMonths}/>
                 :
                     <View>
-                        <View className="w-full flex-row justify-center">
+                        <View className="w-full flex-row">
                             <View>
                                 <Text className="text-white text-lg font-semibold">
                                     Trilha Mensal
                                 </Text>
                                 <View>
-                                    <Text className="text-zinc-500 font-bold text-base">
+                                    <Text className="text-zinc-500 font-bold text-sm">
                                         {monthsString[streakMonths[selectedMonth].monthIndex]} {streakMonths[selectedMonth].year}
                                     </Text>
                                     <View>
@@ -121,10 +139,25 @@ export default function Streak({navigation, setFocusHeight}){
                                     </View>
                                 </View>
                             </View>
-                            <View>
-
-                            </View>
                         </View>
+                        <ScrollView
+                                className="flex-row-reverse w-full py-5"
+                                pagingEnabled
+                                horizontal
+                                onLayout={ (e) => {
+                                    
+                                    setDimensionsScrollView({
+                                        height: e.nativeEvent.layout.height,
+                                        width: e.nativeEvent.layout.width,
+                                    })   
+                                }}
+                            >
+                                { streakMonths.map((month) => {
+                                    return expandedOption == 'daily'
+                                    ? <StreakDaily month={month}/>
+                                    : <StreakWeekMonth month={month}/> 
+                                })}
+                        </ScrollView>
                     </View>
                 }
             </View>
@@ -133,8 +166,7 @@ export default function Streak({navigation, setFocusHeight}){
 }
 
 function formatStreak(streakDataList: StreakData[]): StreakMonth[]{
-    let actualDate = new Date(Date.now());
-        
+    let actualDate = getDateWithoutTime(new Date(Date.now()));
     let anoInicial = streakDataList[0].start.getFullYear();
     let anoFinal = actualDate.getFullYear();
 
@@ -166,23 +198,24 @@ function formatStreak(streakDataList: StreakData[]): StreakMonth[]{
                 let thisDate = new Date(anoInicial+yearsPast, i, j+1);
                 let status: "unchecked" | "checked" | null;
                 //Talvez esses testes não sejam a coisa mais otimizada do mundo, vamo vekkkkkkk
-                if(thisDate < startDate)
+
+                if(thisDate < startDate){
                     status = thisDate < streakDataList[0].start? null : 'unchecked'
-                else if(thisDate.getTime() == startDate.getTime() || (thisDate > startDate && thisDate < endDate))
+                }
+                else if((thisDate.getTime() == startDate.getTime() && thisDate.getTime() != endDate.getTime()) || (thisDate > startDate && thisDate < endDate)){
                     status = "checked";
+                }
                 else if(thisDate.getTime() == endDate.getTime() ){
                     status = "checked";
                     if(streakDataListIndex+1 != streakDataList.length){
                         streakDataListIndex++;
-                        startDate = streakDataList[streakDataListIndex].start;
-                        endDate = streakDataList[streakDataListIndex].end; 
+                        startDate = getDateWithoutTime(streakDataList[streakDataListIndex].start);
+                        endDate = getDateWithoutTime(streakDataList[streakDataListIndex].end); 
                     }
+                } else if(thisDate < actualDate){
+                    status = 'unchecked';
                 }
                 else status = null
-                // lembrando que o getTime() ta pegando o timestamp puro (SO POR ENQUANTO), contando as horas, ouseja, 
-                // tem uns dia bipolar aí, no dia vai dar como nao feito, no outro vai ta verdinho
-                // DEU CERTO  --QUASE DE PRIMEIRA-- FIIOAJSIOAWJE IUNWAIU NWIU AN daeleelelelelele 
-                // terminei ontem, nao tinha testado, só fiz isso agr
                 let day = {
                     day: j+1,
                     weekdayIndex: thisDate.getDay(),

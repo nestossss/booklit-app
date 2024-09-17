@@ -16,7 +16,7 @@ import { HeaderHome } from '../../../components/HeaderHome';
 const Tab = createMaterialTopTabNavigator();
 
 function HomeLayout(){
-   const [focusHeight, setFocusHeight] = useState(Dimensions.get('screen').height*0.8);
+   const [focusHeight, setFocusHeight] = useState();
 
    return (
       <View>
@@ -53,7 +53,7 @@ function HomeLayout(){
                   },
                   tabBarAccessibilityLabel: 'Barra de navegação',
                }}
-               style={{height: focusHeight}}
+               style={{minHeight: focusHeight? focusHeight: 780, }}
             >
                <Tab.Screen 
                   name='ContinuarLendo' 

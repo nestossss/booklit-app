@@ -1,3 +1,29 @@
+/* Library Types */
+interface Library {
+   salvos: Array<Record> | null,
+   terminados: Array<Record> | null, 
+   sendoLidos: Array<Record> | null,  
+}
+
+interface Record {
+   livro: Book,
+   paginasLidas: number,
+   tempoLido: number
+}
+
+interface Book {
+   idlivro?: number,
+   temBookUrl: boolean,
+   bookUrl: string,
+   titulo: string,
+   sinopse: string,
+   totalPag: number,
+   imgUri: string,
+   autores?: Array<string>,
+   generos?: Array<string>
+}
+
+/* Streak types */
 interface StreakMonth {
    year: number,
    monthIndex: number, 
@@ -15,4 +41,4 @@ interface StreakData {
    end: Date,
 }
 
-export { StreakMonth, StreakDay, StreakData }
+export type { StreakMonth, StreakDay, StreakData, Library, Record, Book};

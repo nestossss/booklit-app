@@ -2,7 +2,7 @@ import { Link } from "expo-router";
 import { Image, View, Text } from "react-native";
 import { StyleSheet } from "react-native";
 
-function LivroCard({
+function LivroHomeCard({
    googleId,
    title,
    imageUrl,
@@ -24,7 +24,7 @@ function LivroCard({
    )
 }
 
-export { LivroCard }
+export { LivroHomeCard }
 
 const styles = StyleSheet.create({
    imgThumbnail: {

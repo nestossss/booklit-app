@@ -3,7 +3,7 @@ import { LibContext } from "../contexts/LibContext";
 import { UserContext } from "../contexts/UserContext"
 import api from "../api/api";
 import { useChangesMade } from "./useChangesMade";
-import { Library } from "../contexts/LibContext";
+import type { Library } from "../util/types";
 
 function useLib(): [Library, React.Dispatch<React.SetStateAction<Library>>]{
 

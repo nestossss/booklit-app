@@ -1,4 +1,4 @@
-import { StyleSheet, View, Text } from "react-native";
+import { StyleSheet, View, Text, FlatList } from "react-native";
 import { RouteFocusContext } from "../../../contexts/RouteFocusContext";
 import { useCallback, useContext } from "react";
 import { useFocusEffect } from "expo-router";
@@ -13,18 +13,15 @@ export default function SendoLidos(){
     }, [] ) );
 
     return (
-        <View className="bg-screen-black" style={styles.screen}>
-            <Text> oi </Text>
+        <View className="flex-1 bg-screen-black items-center justify-center py-16">
+            <FlatList 
+                
+
+            />
         </View>
     )
 }
 const styles = StyleSheet.create({
-   screen: {
-       flex: 1,
-       justifyContent: "center",
-       alignItems: "center",
-       paddingVertical: 60,
-   },
    text: {
         width:'100%',
         textAlign: "center", 
