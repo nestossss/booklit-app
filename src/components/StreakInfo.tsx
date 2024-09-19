@@ -5,7 +5,7 @@ import React, { SetStateAction, useEffect, useState } from "react";
 const onFireIcon = require('../../assets/icons/fire-on-icon.png');
 const offFireIcon = require('../../assets/icons/fire-on-icon.png');
 
-const StreakInfo = ({expanded, setExpanded, lastStreak, className}:{
+const StreakInfo = ({expanded, setExpanded, lastStreak, className, streakCount}:{
    expanded: boolean,
    setExpanded: React.Dispatch<SetStateAction<boolean>>
    className?: string
@@ -27,9 +27,8 @@ const StreakInfo = ({expanded, setExpanded, lastStreak, className}:{
                <View className="w-full">
                    <Text
                        className="text-white font-extrabold text-4xl" 
-                       style={{ display: lastStreak.getTime() == today.getTime() || lastStreak.getTime() == yesterday.getTime()? "flex" : 'none'}}
                    >
-                        1
+                     {streakCount}
                    </Text>
                    <Text className="text-zinc-600 w-full flex-1">
                        { lastStreak.getTime() == today.getTime()? 
@@ -70,7 +69,7 @@ const StreakInfo = ({expanded, setExpanded, lastStreak, className}:{
                         <Image source={lastStreak.getTime() == today.getTime() || lastStreak.getTime() == yesterday.getTime()? onFireIcon : offFireIcon} className="h-full aspect-square" />
                      </View>
                      <Text className="text-white font-extrabold text-4xl w-1/2" adjustsFontSizeToFit>
-                        4{/* sequencia */}
+                        {streakCount}
                      </Text>
                   </View>
                   <View className="w-full flex-row justify-center">

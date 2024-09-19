@@ -25,7 +25,7 @@ export default function Streak({navigation, setFocusHeight}){
     const [streakMonths, setStreakMonths]:[StreakMonth[] | null, Dispatch<SetStateAction<StreakMonth[]>>] = useState(null);
     const [lastStreak, setLastStreak] = useState(null);
     const [selectedMonth, setSelectedMonth]: [number, Dispatch<SetStateAction<number>>]= useState(0);
-    const [streakCount, setStreakCount] = useState();
+    const [streakCount, setStreakCount]: [number, Dispatch<SetStateAction<number>>] = useState(null);
     const [expandedOption, setExpandedOption]: ["daily" | "week", Dispatch<SetStateAction<"daily" | "week">>]= useState("daily");
 
     const [expanded, setExpanded]: [boolean | null, Dispatch<SetStateAction<boolean>>] = useState(null); 
@@ -78,16 +78,17 @@ export default function Streak({navigation, setFocusHeight}){
                     }
                 })
 
-                let streakCount = 0;
+                let count = 0;
 
                 let lastStrData = getDateWithoutTime(streakDataList[streakDataList.length-1].end)
                 let firstStrData = getDateWithoutTime(streakDataList[streakDataList.length-1].start)
                 
                 if(lastStrData > yesterday)
-                    streakCount = (lastStrData.getTime() - firstStrData.getTime())/86400000;
-                console.log("streak: ", streakCount);
+                    count = (lastStrData.getTime() - firstStrData.getTime())/86400000;
+                console.log("streak: ", count);
 
                 // streaks = formatStreaks(streaks);
+                setStreakCount(count);
                 setLastStreak( lastStrData )
                 console.log(streakDataList[streakDataList.length-1].end);
                 return setStreakMonths( formatStreak(streakDataList) );
