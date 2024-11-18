@@ -1,15 +1,15 @@
-import { router, useLocalSearchParams } from "expo-router";
+import { Link, router, useLocalSearchParams } from "expo-router";
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../../contexts/UserContext";
-import { View, Text, Image, StyleSheet, TouchableHighlight, TouchableOpacity, ScrollView } from "react-native";
+import { View, Text, Image, StyleSheet, TouchableHighlight, TouchableOpacity, ScrollView, FlatList, TouchableWithoutFeedback } from "react-native";
 import { LoadingScreen } from "../../components/LoadingScreen";
-import Entypo from "@expo/vector-icons/Entypo";
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
+import { Octicons, FontAwesome6, MaterialIcons, Entypo} from "@expo/vector-icons";
 import axios from "axios";
 import api from "../../api/api";
+import { Note } from "../../components/Note";
+import { useLib } from "../../hooks/useLib";
 
-export default function EditLivro(){
+export default function ViewSavedBook(){
    
    const { 
       googleId
@@ -19,12 +19,27 @@ export default function EditLivro(){
 
    const [isDescriptionExpanded, setDescriptionExpanded] = useState();
 
+   const [lib] = useLib();
    const [book, setBook] = useState(null);
    const [paginasLidas, setPaginasLidas] = useState();
    const [tempoLido, setTempoLido] = useState();
+   const [notas, setNotas] = useState([]);
+
+   
+   function searchRecord(lib, bookUrl){
+     if(!bookUrl) return null
+     for(let i = 0; i < Object.keys(lib).length; i++){
+        const records = lib[Object.keys(lib)[i]];
+        const found = records.find(record => record.livro.bookUrl == bookUrl);
+        if(found) console.log(found)
+        if(found) return found;
+     }
+     return null;
+   };
+
 
    const getBook = async () => {
-      let res = await axios.get(`https://www.googleapis.com/books/v1/volumes/${googleId}`).catch( (reason) => { console.log(reason)});
+      let res = await axios.get(`https://www.googleapis.com/books/v1/volumes/${googleId}`).catch( (reason) => { console.log("getBook EditLivro"); console.log(reason)});
       let volumeInfo = res?.data?.volumeInfo;
       if(volumeInfo){
          return setBook(volumeInfo);
@@ -34,17 +49,14 @@ export default function EditLivro(){
       });
    }
    const getRegistro = async () => {
-      let res = await api.get("/lib/registro?bookUrl="+ googleId, {
-         headers: {
-            Authorization: 'Bearer '+ userInfo.token,
-         }
-      }).catch( (err) => { console.log(err)} );
-
-      if(res.data?.registro){
-         setPaginasLidas(res.data.registro.paginas_lidas);
-         setTempoLido(res.data.registro.tempo_lido);
+      let record = searchRecord(lib, googleId);
+      if(record){
+         setNotas(record.notas);
+         setPaginasLidas(record.paginasLidas);
+         setTempoLido(record.tempoLido);
       }
    }
+
    /*
     
       title,
@@ -76,9 +88,12 @@ export default function EditLivro(){
 
    useEffect( () => {
       getBook();
-      getRegistro();
    }, [])
    
+   useEffect( ()=>{
+      getRegistro();
+   },[lib])
+
    if(book == null){
       return (
          <LoadingScreen />
@@ -92,7 +107,7 @@ export default function EditLivro(){
       <ScrollView contentContainerStyle={styles.container} style={{ backgroundColor: '#111111'}}>
          <View style={styles.backgroundView}></View>
          <View style={{height: 120, width: '90%'}}>
-            <Text style={styles.title}> {book.title}</Text>
+            <Text style={styles.title}>{book.title}</Text>
          </View>
          <View style={styles.infoContainer}>
             <View style={styles.imgContainer}>
@@ -129,35 +144,67 @@ export default function EditLivro(){
             </View>
          </View>
          <View style={styles.descriptionContainer}>
-                  <TouchableHighlight
-                     onPress={ ()  => {
-                        setDescriptionExpanded(!isDescriptionExpanded)
-                     }}
+            <TouchableWithoutFeedback
+               onPress={ ()  => {
+                  setDescriptionExpanded(!isDescriptionExpanded)
+               }}
+            >
+               <View style={styles.descriptionTitleContainer}>
+                  <Text
+                     numberOfLines={1} 
+                     style={styles.descriptionTitle}
                   >
-                     <View style={styles.descriptionTitleContainer}>
-                        <Text
-                           numberOfLines={1} 
-                           style={styles.descriptionTitle}
-                        >
-                              Descrição
-                        </Text>
-                        <Entypo 
-                           name="chevron-left" 
-                           size={24} 
-                           color="white"
-                           style={{
-                              transform: isDescriptionExpanded? 'rotate(-90deg)': 'rotate(0deg)'
-                           }} 
-                        />
-                     </View>
-                  </TouchableHighlight>
-                  <Text 
-                     numberOfLines={isDescriptionExpanded? 100 : 2 }
-                     style={[styles.description, {color: isDescriptionExpanded? '#fff' : '#A0A0A0'}]}
-                  >
-                     {book.description}
+                        Descrição
                   </Text>
+                  <Entypo 
+                     name="chevron-left" 
+                     size={24} 
+                     color="white"
+                     style={{
+                        transform: isDescriptionExpanded? 'rotate(-90deg)': 'rotate(0deg)'
+                     }} 
+                  />
+               </View>
+            </TouchableWithoutFeedback>
+            <Text 
+               numberOfLines={isDescriptionExpanded? undefined : 2 }
+               style={[styles.description, {color: isDescriptionExpanded? '#fff' : '#A0A0A0'}]}
+            >
+               {book.description+'\n'}
+            </Text>
          </View>
+
+         <Link href={{
+            pathname: notas.length > 0? "/NoteScreen" : "/NoteEditScreen",
+            params: {
+               googleId: googleId.toString()
+            }
+         }} asChild>
+            <TouchableWithoutFeedback>
+               <View style={styles.noteContainer}>
+                 <View className="flex-row justify-between items-center mb-6 w-full">
+                   <View className="w-1/2">
+                     <Text className="text-2xl font-bold text-white mb-1">Notas</Text>
+                     <Text className="text-sm text-white">{notas.length} nota{notas.length !== 1 ? 's' : ''}</Text>
+                   </View>
+                   {/* <View className="h-10 w-10 justify-center items-center">
+                     <Octicons name="filter" size={18} color="white" />
+                   </View> */}
+                 </View>
+
+                 {
+                  notas.length > 0? notas.map(nota => (
+                     <Note googleId={googleId} canExpand={false} note={nota}/>
+                   )): <View className="w-full mt-4">
+                      <Text className="text-center text-white text-base font-medium">Clique para criar uma nota</Text>
+                  </View> 
+                 }
+                 {/* <View>
+                     <Text className="text-white">Salva nova</Text>
+                 </View> */}
+               </View>
+            </TouchableWithoutFeedback>
+         </Link>
 
       </ScrollView>   
    )
@@ -241,12 +288,20 @@ const styles = StyleSheet.create({
       fontWeight: '700',
    },
    descriptionContainer: {
-      marginTop: 10,
+      marginTop: 20,
       width: '90%',
       flex: 1,
    },
    description: {
       marginTop: 15,
-   } 
+      flexShrink: 1
+   },
+   noteContainer: {
+      width: "90%",
+      marginTop: 20,
+      marginBottom: 20,
+      justifyContent: 'space-between',
+      alignItems: 'center',
+   }
 
 })

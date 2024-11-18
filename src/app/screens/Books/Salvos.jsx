@@ -2,7 +2,7 @@ import { StyleSheet, View, Text, FlatList} from "react-native";
 import { RouteFocusContext } from "../../../contexts/RouteFocusContext";
 import { useCallback, useContext, useEffect} from "react";
 import { useFocusEffect } from "expo-router";
-import { LivroCard } from "../../../components/LivroCard";
+import { LivroHomeCard, LivroItemCard } from "../../../components/LivroItemCard";
 
 import { useLib } from "../../../hooks/useLib";
  
@@ -12,23 +12,19 @@ export default function Salvos(){
     const [lib, setLib] = useLib();
 
     function renderSalvos({item}){
-        return <LivroCard
+        return <LivroItemCard
             key={"idsalvo:"+item.livro.bookUrl}
-            googleId={item.livro.bookUrl}
-            title={item.livro.titulo} 
-            imageUrl={item.livro.imgUri.replace('http://', 'https://')} 
-            authors={item.livro?.autores}
+            type="salvo"
+            info={item}
         />
     }
   
     useFocusEffect( useCallback(() => {
         setFocused('Livros Salvos');
-        console.log('olha so ')
     }, [] ) );
     
     return (
-        <View style={styles.screen}>
-            <Text> Livros Salvos </Text>
+        <View className="bg-screen-black" style={styles.screen}>
              <FlatList 
                 data={ lib.salvos }
                 renderItem={ renderSalvos }
@@ -40,11 +36,10 @@ export default function Salvos(){
 
 const styles = StyleSheet.create({
    screen: {
-       backgroundColor: "black",
        flex: 1,
        justifyContent: "center",
        alignItems: "center",
-       paddingVertical: 60,
+       paddingVertical: 10
    },
    text: {
         width:'100%',

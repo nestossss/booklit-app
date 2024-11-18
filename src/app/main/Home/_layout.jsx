@@ -3,23 +3,33 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 import HomePage from './HomePage';
 
 
-import { Image, ScrollView, StyleSheet, View } from 'react-native';
+import { Animated, Dimensions, Image, ScrollView, StyleSheet, View } from 'react-native';
 import Estatisticas from '../../screens/Home/Estatisticas';
-import ContinuarLendo from '.';
+import ContinuarLendoHome from '.';
 import Metas from '../../screens/Home/Metas';
 import Streak from '../../screens/Home/Streak';
 
 import FontAwesome5  from '@expo/vector-icons/FontAwesome5';
+import { useEffect, useState } from 'react';
+import { HeaderHome } from '../../../components/HeaderHome';
 
 const Tab = createMaterialTopTabNavigator();
 
 function HomeLayout(){
+   const [focusHeight, setFocusHeight] = useState();
+
    return (
       <View>
          <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollView}>
-            <Tab.Navigator 
+            <HeaderHome />
+            <Tab.Navigator
                initialRouteName='ContinuarLendo'
                screenOptions={{
+                  tabBarPressColor: "#00000000",
+                  tabBarIndicatorStyle: {
+                     display: 'none'
+                  },
+                  swipeEnabled: false,
                   tabBarStyle: {
                      backgroundColor: '#47A538',
                   },
@@ -41,13 +51,12 @@ function HomeLayout(){
                      width: 50,
                      height: 50,
                   },
-                  tabBarAccessibilityLabel: 'Barra de navegação'
+                  tabBarAccessibilityLabel: 'Barra de navegação',
                }}
-               style={{minHeight: 500}}
+               style={{minHeight: focusHeight? focusHeight: 780, }}
             >
                <Tab.Screen 
                   name='ContinuarLendo' 
-                  component={ContinuarLendo} 
                   options={{
                      tabBarIcon: ({focused}) => 
                         focused? 
@@ -59,15 +68,16 @@ function HomeLayout(){
                            <Image source={require('../../../../assets/icons/book-open-white.png' )} style={styles.customIcon}/>
                         </View>,
                      tabBarLabel: "Home",
-                     tabBarAccessibilityLabel: 'Botao de navegação para "Continuar lendo"'
+                     tabBarAccessibilityLabel: 'Botao de navegação para "Continuar lendo"',
                   }}
-               />
-               <Tab.Screen 
-                  name='Metas' 
-                  component={Metas}
+               >
+                  { ({navigation}) => <ContinuarLendoHome navigation={navigation} setFocusHeight={setFocusHeight}/>}
+               </Tab.Screen>
+               {/* <Tab.Screen 
+                  name='Metas'
                   options={{
                      tabBarIcon: ({focused}) => 
-                        focused? 
+                        focused?
                         <View style={styles.iconContainerFocused}>
                               <Image source={require('../../../../assets/icons/target-one-green.png' )} style={styles.customIcon}/>
                         </View>
@@ -79,10 +89,11 @@ function HomeLayout(){
                      tabBarAccessibilityLabel: 'Botao de navegação para "Metas"'
 
                   }}
-               />
+               >
+                  { ({navigation}) => <Metas navigation={navigation} setFocusHeight={setFocusHeight}/>}
+               </Tab.Screen> */}
                <Tab.Screen 
                   name='Streak' 
-                  component={Streak}
                   options={{
                      tabBarIcon: ({focused}) => 
                      focused? 
@@ -96,10 +107,11 @@ function HomeLayout(){
                      tabBarLabel: 'Streak',
                      tabBarAccessibilityLabel: 'Botao de navegação para "Metas"'
                   }}
-               />
-               <Tab.Screen 
+               > 
+                  {({navigation}) => <Streak setFocusHeight={setFocusHeight} navigation={navigation}/>}
+               </Tab.Screen>
+               {/* <Tab.Screen 
                   name='Estatisticas' 
-                  component={Estatisticas} 
                   options={{
                      tabBarIcon: ({focused}) => 
                      focused? 
@@ -112,7 +124,9 @@ function HomeLayout(){
                         </View>,
                      tabBarLabel: 'Estatísticas',
                   }}
-               />
+               > 
+                  { ({navigation}) => <Estatisticas navigation={navigation} setFocusHeight={setFocusHeight}/>}
+               </Tab.Screen> */}
             </Tab.Navigator>
             <HomePage/>
          </ScrollView>

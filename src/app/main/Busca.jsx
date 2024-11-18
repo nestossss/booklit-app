@@ -2,8 +2,7 @@ import Feather from '@expo/vector-icons/Feather';
 import axios from 'axios';
 import { useState } from 'react';
 import { StyleSheet, View, TextInput, ScrollView, StatusBar, Pressable, FlatList} from "react-native";
-import { LivroCard} from '../../components/LivroCard';
-
+import { LivroItemCard } from '../../components/LivroItemCard'
 const googleKey = "AIzaSyCAguBVjk_msfejlvRtcpnrKsP0ztNjoto";
 
 export default function Busca(){
@@ -26,42 +25,50 @@ export default function Busca(){
     }
 
     function renderSearchResults({item}){
-        if(item.id && item.volumeInfo?.imageLinks?.thumbnail){
-            return <LivroCard
-                googleId={item.id}
-                title={item.volumeInfo.title} 
-                imageUrl={item.volumeInfo?.imageLinks?.thumbnail.replace('http://', 'https://')}
-                authors={item.volumeInfo?.authors}
+        if(item.id && item.volumeInfo?.imageLinks?.thumbnail && item.volumeInfo?.title && item.volumeInfo?.description){
+            return <LivroItemCard
+                type='default'
+                info={{
+                    bookUrl: item.id,
+                    imgUri: item.volumeInfo.imageLinks.thumbnail,
+                    temBookUrl: true,
+                    totalPag: item.volumeInfo.pageCount,
+                    titulo: item.volumeInfo.title,
+                    sinopse: item.volumeInfo.description,
+                    autores: item.volumeInfo?.authors,
+                    generos: item.volumeInfo?.categories, 
+                }} 
             />
         }
     }
 
     return (
-        <View style={styles.screen}>
-            <ScrollView style={{ minHeight: 125, maxHeight: 150, }} keyboardShouldPersistTaps="handled" contentContainerStyle={styles.searchContainer}>
-            <View style={styles.inputContainer}>
-                <View style={{height: "100%", aspectRatio: 1, justifyContent: 'center', alignItems: 'center'}}>
-                    <Feather style={[styles.icon]} name="search" size={24} color="gray" />
-                </View>
-                <View style={styles.inputView}>
-                    <TextInput
-                        style={styles.inputText}
-                        value={ searchParams }
-                        numberOfLines={1}
-                        placeholderTextColor={styles.placeholder.color}
-                        placeholder="Pesquisar livros"
-                        onChangeText={ (text) => {
-                            setSearchParams(text)
-                        }}
-                        onSubmitEditing={ handleSearch }
-                    />
-                </View>
-                <Pressable style={{ height: "100%", aspectRatio: 1 ,justifyContent: 'center', alignItems: 'center'}} onPress={ handleSearchErase }>
-                    <Feather style={styles.icon}name="x" size={18} color="gray" />
-                </Pressable>
-            </View>  
-        </ScrollView>
+        <View className="bg-screen-black" style={styles.screen}>
+            <ScrollView style={{ minHeight: 90, maxHeight: 120, }} keyboardShouldPersistTaps="handled" contentContainerStyle={styles.searchContainer}>
+                <View style={styles.inputContainer}>
+                    <View style={{height: "100%", aspectRatio: 1, justifyContent: 'center', alignItems: 'center'}}>
+                        <Feather style={[styles.icon]} name="search" size={24} color="gray" />
+                    </View>
+                    <View style={styles.inputView}>
+                        <TextInput
+                            style={styles.inputText}
+                            value={ searchParams }
+                            numberOfLines={1}
+                            placeholderTextColor={styles.placeholder.color}
+                            placeholder="Pesquisar livros"
+                            onChangeText={ (text) => {
+                                setSearchParams(text)
+                            }}
+                            onSubmitEditing={ handleSearch }
+                        />
+                    </View>
+                    <Pressable style={{ height: "100%", aspectRatio: 1 ,justifyContent: 'center', alignItems: 'center'}} onPress={ handleSearchErase }>
+                        <Feather style={styles.icon}name="x" size={18} color="gray" />
+                    </Pressable>
+                </View>  
+            </ScrollView>
         <FlatList 
+            className='p-2'
             data={ searchResults }
             renderItem={ renderSearchResults }
             keyExtractor={item => item.id}
@@ -73,7 +80,6 @@ export default function Busca(){
 const styles = StyleSheet.create({
     screen: {
         paddingTop: StatusBar.currentHeight,
-        backgroundColor: "black",
         flex: 1,
     },
     searchContainer: {
@@ -93,7 +99,7 @@ const styles = StyleSheet.create({
         borderColor: "#959595",
         borderWidth: 1.5,
         borderRadius: 15,
-        height: 55,
+        height: 50,
         marginHorizontal: 10,
     },
     inputView: {

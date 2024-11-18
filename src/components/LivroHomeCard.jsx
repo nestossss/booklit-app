@@ -2,16 +2,17 @@ import { Link } from "expo-router";
 import { Image, View, Text } from "react-native";
 import { StyleSheet } from "react-native";
 
-function LivroCard({
+function LivroHomeCard({
    googleId,
    title,
    imageUrl,
    authors,
+   index,
 }){
    return (
       <Link push href={`/InfoLivro?googleId=${googleId}`}>
-         <View style={styles.container}>
-            <View style={styles.imgThumbnail}>
+         <View style={{ padding: 12, paddingLeft: index == 0? 0 : 12, width: index == 0? 110 : 122}}>
+            <View style={[styles.imgThumbnail]}>
                <Image source={{
                   uri: imageUrl? imageUrl : "https://books.google.com/books/content?id=tRl6DwAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
                }} style={styles.image}/>
@@ -23,15 +24,10 @@ function LivroCard({
    )
 }
 
-export { LivroCard }
+export { LivroHomeCard }
 
 const styles = StyleSheet.create({
-   container: {
-      width: 120,
-      padding: 10,
-   },
    imgThumbnail: {
-      width: 100,
       aspectRatio: 2/3,
       marginBottom: 8,
    },

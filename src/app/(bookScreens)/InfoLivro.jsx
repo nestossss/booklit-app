@@ -32,7 +32,7 @@ export default function InfoLivro(){
    const [book, setBook] = useState();
    const [isLivroSalvo, setLivroSalvo] = useState(null);
 
-   const [livroId, setLivroId] = useState(0);
+   const [livroId, setLivroId] = useState(null);
    const [pagLidas, setPagLidas] = useState(0);
    const [tempoLido, setTempoLido] = useState(0);
 
@@ -42,7 +42,7 @@ export default function InfoLivro(){
    const { googleId } = useLocalSearchParams();
    
    const getBook = async (signal) => {
-      let res = await axios.get(`https://www.googleapis.com/books/v1/volumes/${googleId}`, { signal }).catch( (reason) => { console.log(reason)});
+      let res = await axios.get(`https://www.googleapis.com/books/v1/volumes/${googleId}`, { signal }).catch( (reason) => { console.log("getBook"); console.log(reason)});
       let volumeInfo = res?.data?.volumeInfo;
       if(volumeInfo){
          return setBook(volumeInfo);
@@ -58,52 +58,63 @@ export default function InfoLivro(){
          headers: {
             Authorization: 'Bearer '+ userInfo.token,
          }
-      }).catch( (err) => { console.log(err)} );
+      }).catch( (err) => {console.log("getRegistro"); console.log(err)} );
 
       if(res?.data?.registro){ 
          console.log(tempoLido, '>', res.data.registro.tempo_lido)
          setLivroId(res.data.registro.idlivro);
-         
          setTempoLido(res.data.registro.tempo_lido);
          setPagLidas(res.data.registro.paginas_lidas);
          return setLivroSalvo(true);
       }
-      setLivroId(null);
-      setLivroSalvo(false);
+      else {
+         setLivroId(null);
+         setLivroSalvo(false);
+      }
    }
 
 
    async function adicionar(signal) {
+      if(livroId == null) return;
       let body = {
          'bookUrl': googleId,
       };
       let headers = {
          Authorization: "Bearer "+ userInfo.token
       }
-
+      
       let res = await api.put('/lib/adicionar/existente', body, { headers, signal })
-      .catch( (err) => console.log(err) );
+      .catch( (err) => {console.log("adicionar"); console.log(err)} );
+      console.log(res?.data);
       if(res?.data?.registro?.livro?.idlivro){
          setLivroId(res.data.registro.livro.idlivro);
       }   
+      if(res?.status != 200 || !res){
+         setLivroSalvo(false)
+      }
    }
 
    async function deletar(signal){
+      if(livroId == null) return;
       let headers = {
          Authorization: "Bearer "+ userInfo.token
       }
-      setLivroSalvo(false);
-      await api.delete(`/lib/remover?bookId=${livroId}`, { headers, signal  }).catch( err => console.log(err));
+      let res = await api.delete(`/lib/remover?bookId=${livroId}`, { headers, signal  }).catch( err =>  {console.log("deletar 1"); console.log(err)});
+      console.log(res?.data);
+      if(res?.status != 200 || !res){
+         setLivroSalvo(true);
+      }
       setChangesMade(true);
    }
-   
+
    useEffect( ()=> {
       const controller = new AbortController();
       const signal = controller.signal;
 
-      if(isLivroSalvo) adicionar(signal);
-
-      if(!isLivroSalvo) deletar(signal);
+      if(isLivroSalvo != null){
+         if(isLivroSalvo) adicionar(signal);
+         if(!isLivroSalvo) deletar(signal);
+      }
       
       return () => {
          controller.abort();
@@ -111,28 +122,7 @@ export default function InfoLivro(){
    }, [isLivroSalvo]);
 
    async function handlePressSalvar(){
-      let headers = {
-         Authorization: "Bearer "+ userInfo.token
-      }
-
-
-      if(!isLivroSalvo){
-         setLivroSalvo(true);
-         let body = {
-            'bookUrl': googleId,
-         };
-         let res = await api.put('/lib/adicionar/existente', body, { headers })
-         .catch( (err) => console.log(err) );
-         if(res?.data?.registro?.livro?.idlivro){
-            setLivroId(res.data.registro.livro.idlivro);
-         }
-         if(res?.data?.status != 200)
-            return setLivroSalvo(false);
-         return setChangesMade(true);
-      }
-      if(livroId){
-      }
-      return setLivroSalvo(false);
+      setLivroSalvo(prev => !prev);
    }
 
    function handlePressLerAgora(){
@@ -200,7 +190,7 @@ export default function InfoLivro(){
                <View style={styles.btnsContainer}>
                   <TouchableHighlight 
                      onPressIn={ handlePressInSalvar }
-                     onPressOut={ handlePressOutSalvar }WWWW
+                     onPressOut={ handlePressOutSalvar }
                      activeOpacity={0.5}
                      style={[styles.transparentBtn, pressBorderColor]}
                      onPress={ () => { 
@@ -255,10 +245,10 @@ export default function InfoLivro(){
                      </View>
                   </TouchableHighlight>
                   <Text 
-                     numberOfLines={isDescriptionExpanded? 100 : 2 }
+                     numberOfLines={isDescriptionExpanded? undefined : 2 }
                      style={[styles.description, {color: isDescriptionExpanded? '#fff' : '#A0A0A0'}]}
                   >
-                     {book.description}
+                     {book.description+'\n\n'}
                   </Text>
                </View>
             </View>

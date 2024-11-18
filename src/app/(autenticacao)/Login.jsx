@@ -53,12 +53,9 @@ function Login() {
                 return setPasswordIncorrect(false);
             }
         } catch (err){
+            console.log("login");
             return console.log(err);
         }
-    }
-
-    function handlePasswordInput(text){
-        
     }
     
     const checkUserExists = async () => {
@@ -75,6 +72,7 @@ function Login() {
             if(res.data.cadastrado) console.log(username + " existe no db");
             else console.log(username + " nao existe no db");
         } catch (err) {
+            console.log("login 2");
             console.log(err.message);
         }
     }

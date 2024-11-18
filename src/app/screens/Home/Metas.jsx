@@ -1,15 +1,25 @@
+import { useEffect } from "react";
 import { StyleSheet, View, Text } from "react-native";
  
-export default function Metas(){
+export default function Metas({navigation, setFocusHeight}){
+
+    useEffect( () => {
+        const adjustHeight = navigation.addListener('focus', (e) => {
+            setFocusHeight(500);
+            // startAnim();
+        })
+
+        return adjustHeight
+    }, []);
+
     return (
-        <View style={styles.screen}>
+        <View className="bg-screen-black" style={styles.screen}>
             <Text style={styles.text} numberOfLines={1}>Bem vindo a Metas</Text>
         </View>
     )
 }
 const styles = StyleSheet.create({
    screen: {
-       backgroundColor: "black",
        flex: 1,
        justifyContent: "center",
        alignItems: "center",
