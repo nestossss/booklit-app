@@ -190,7 +190,7 @@ export default function InfoLivro(){
                <View style={styles.btnsContainer}>
                   <TouchableHighlight 
                      onPressIn={ handlePressInSalvar }
-                     onPressOut={ handlePressOutSalvar }WWWW
+                     onPressOut={ handlePressOutSalvar }
                      activeOpacity={0.5}
                      style={[styles.transparentBtn, pressBorderColor]}
                      onPress={ () => { 
@@ -245,10 +245,10 @@ export default function InfoLivro(){
                      </View>
                   </TouchableHighlight>
                   <Text 
-                     numberOfLines={isDescriptionExpanded? 100 : 2 }
+                     numberOfLines={isDescriptionExpanded? undefined : 2 }
                      style={[styles.description, {color: isDescriptionExpanded? '#fff' : '#A0A0A0'}]}
                   >
-                     {book.description}
+                     {book.description+'\n\n'}
                   </Text>
                </View>
             </View>

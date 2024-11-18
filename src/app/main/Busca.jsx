@@ -25,7 +25,7 @@ export default function Busca(){
     }
 
     function renderSearchResults({item}){
-        if(item.id && item.volumeInfo?.imageLinks?.thumbnail){
+        if(item.id && item.volumeInfo?.imageLinks?.thumbnail && item.volumeInfo?.title && item.volumeInfo?.description){
             return <LivroItemCard
                 type='default'
                 info={{

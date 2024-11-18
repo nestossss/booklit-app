@@ -2,8 +2,11 @@ import { View, Text, StyleSheet, StatusBar, TouchableOpacity } from 'react-nativ
 import { StatusBar as StatusBarExpo } from 'expo-status-bar';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 
-export function HeaderDefault({router, text, hasBackButton}){
-
+export function HeaderDefault({router, text, hasBackButton}:{
+   router?: any,
+   text: string,
+   hasBackButton?: boolean
+}){
 
    if(hasBackButton){
       return (

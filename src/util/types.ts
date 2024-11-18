@@ -2,13 +2,25 @@
 interface Library {
    salvos: Array<Record> | null,
    terminados: Array<Record> | null, 
-   sendoLidos: Array<Record> | null,  
+   sendoLidos: Array<Record> | null,
 }
 
 interface Record {
    livro: Book,
+   notes?: Array<Note>,
    paginasLidas: number,
    tempoLido: number
+}
+
+interface Note {
+   idnota: number,
+   title?: string
+   content: string,
+   page?: number,
+   line?: number,
+   type: "note" | "quote",
+   createdAt: number,
+   updatedAt: number,
 }
 
 interface Book {
@@ -26,7 +38,7 @@ interface Book {
 /* Streak types */
 interface StreakMonth {
    year: number,
-   monthIndex: number, 
+   monthIndex: number,
    days: Array<StreakDay>
 }
 interface StreakDay {
@@ -41,4 +53,4 @@ interface StreakData {
    end: Date,
 }
 
-export type { StreakMonth, StreakDay, StreakData, Library, Record, Book};
+export type { StreakMonth, StreakDay, StreakData, Library, Record, Note, Book};

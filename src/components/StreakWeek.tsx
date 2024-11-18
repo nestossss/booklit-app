@@ -1,6 +1,6 @@
 //     // esse for vai procurar o primeiro notnull pra pegar a ultima semana
 //     // null na streak representa um dia que ainda nao chegou, ou que o usuario ainda nn tinha começado nenhuma streak (antes do primeiro .start ou depois do ultimo .end)
-import React, { SetStateAction, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { StreakMonth, StreakDay } from "../util/types"
 import { Image, Text, View } from "react-native";
 
@@ -11,17 +11,15 @@ const crossIcon = require("../../assets/icons/close-small.png");
 function StreakWeek({months}: {
    months: StreakMonth[]
 }){
-    const [ultimaSemana, setUltimaSemana]: [StreakDay[] | null, React.Dispatch<SetStateAction<StreakDay[]>>] = useState(null);
+    const [ultimaSemana, setUltimaSemana] = useState<StreakDay[]>([]);
 
     useEffect( () => {
       if(!months) return setUltimaSemana(null);
 
       let ultimoMes = months[months.length-1];
       let primeiroDomingo: StreakDay;
-      setUltimaSemana( prev => [])
 
       for(let i = ultimoMes.days.length-1; i >= 0; i-- ){
-        console.log(ultimoMes.days[i].status);
         if(ultimoMes.days[i].status != null){ // ultimoMes.days[i] = ultimoMes.days[0] //   ou seja, é dia primeiro
             if(i - ultimoMes.days[i].weekdayIndex < 0){  // weekdayIndex = 6 //           e dia primeiro é sabado
                 let daysBack = i - ultimoMes.days[i].weekdayIndex // i=0 weekday=6 (i - weekday) = -6
@@ -40,47 +38,58 @@ function StreakWeek({months}: {
         }
     }
 
+    if (!primeiroDomingo || !primeiroDomingo.day) {
+      console.error("primeiroDomingo está indefinido ou sem propriedade 'day'");
+      return;
+   }
+
     for(let j = primeiroDomingo.day-1; j < primeiroDomingo.day+6; j++){
+      if (j >= ultimoMes.days.length || ultimoMes.days[j] === undefined) {
+         console.error("Tentativa de acessar 'ultimoMes.days' fora dos limites.");
+         continue;
+      }
         if(j > ultimoMes.days.length && primeiroDomingo.weekdayIndex == ultimoMes.days[primeiroDomingo.day-1].weekdayIndex){
             let newDay = j - ultimoMes.days.length;
             let newWeekday =  j - primeiroDomingo.day-1;
-            setUltimaSemana( prev => {
-               prev.push({
+            setUltimaSemana( prev => [
+               ...prev,
+               {
                   day: newDay,
                   status: null,
                   weekdayIndex: newWeekday,
-              })
-              return prev
-            })
+              }
+            ])
         } else if(j > createBlankPrevMonth(months[months.length-1]).days.length && primeiroDomingo.weekdayIndex != ultimoMes.days[primeiroDomingo.day-1].weekdayIndex){
             setUltimaSemana( prev => {
-               prev.push( months[months.length-1].days[j - createBlankPrevMonth(months[months.length-1]).days.length] )
-               return prev;
+               return [
+                  ...prev,
+                  months[months.length-1].days[j - createBlankPrevMonth(months[months.length-1]).days.length]
+               ];
             })
         } else {
             setUltimaSemana( prev => {
-               prev.push(
+               return [
+                  ...prev,
                   primeiroDomingo.weekdayIndex != ultimoMes.days[primeiroDomingo.day-1].weekdayIndex?
                      createBlankPrevMonth(months[months.length-1]).days[j]
                   :
                      months[months.length-1].days[j]
-               )
-               return prev
+               ]
             });
         }
     }
 
     }, [months]);
 
-    if(!months || !ultimaSemana || months.length <= 0){
+    if(!months || !ultimaSemana || months.length <= 0 || ultimaSemana.length < 7){
       return <Text className="text-white w-full">
          Carregando talvez?
       </Text>
     }
-
+ 
     return (
       <View className="w-full h-1/2 flex-row justify-between">
-         { ultimaSemana.map((day) => {
+         { ultimaSemana.map((day, index) => {
             return <View className="w-5 h-10">
                   <View className={"rounded-xl "+
                   (  

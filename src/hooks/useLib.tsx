@@ -9,7 +9,7 @@ function useLib(): [Library, React.Dispatch<React.SetStateAction<Library>>]{
 
    const [changesMade, setChangesMade] = useChangesMade();
    const [userInfo] = useContext(UserContext);   
-   const [lib, setLib]: [Library, React.Dispatch<React.SetStateAction<Library>>] | undefined= useContext(LibContext);
+   const [lib, setLib] = useContext(LibContext);
 
    useEffect( () => {
       const controller = new AbortController();

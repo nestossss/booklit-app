@@ -11,26 +11,35 @@ export default function ContinuarLendoHome({navigation, setFocusHeight}){
 
     useEffect( () => {
         const adjustHeight = navigation.addListener('focus', (e) => {
-            setFocusHeight(780);
+            setFocusHeight(650);
             // startAnim();
         })
 
         return adjustHeight
     }, []);
 
+    const [lib] = useLib()
     return (
         <>
-            <View className="flex-1 bg-black py-4 items-center">
-                <View className="w-11/12">
-                    <Text className="text-white text-xl" style={{ fontFamily: 'OpenSans_700Bold'}}>
-                        Continue Lendo!
-                    </Text>
-                    <Text className="text-white text-sm" style={{ fontFamily: 'OpenSans_500Medium'}}>
-                        Não esqueça da sua meta!
-                    </Text>
-                </View>
-                <ContinueLendo/>
-                
+            <View className={"flex-1 bg-black py-4 items-center"}>
+                {
+                    lib.sendoLidos.length<=0?
+                        <View className="w-full justify-center h-full">
+                            <Text numberOfLines={1} className="text-center font-medium text-lg text-white">Nenhum livro sendo lido :(</Text>
+                        </View>
+                    :
+                    <>
+                        <View className="w-11/12">
+                            <Text className="text-white text-xl" style={{ fontFamily: 'OpenSans_700Bold'}}>
+                                Continue Lendo!
+                            </Text>
+                            <Text className="text-white text-sm" style={{ fontFamily: 'OpenSans_500Medium'}}>
+                                Não esqueça da sua meta!
+                            </Text>
+                        </View>
+                        <ContinueLendo/>
+                    </>
+                }
             </View>
         </>
     )

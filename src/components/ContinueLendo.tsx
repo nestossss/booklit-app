@@ -2,6 +2,7 @@ import { View, ScrollView, Text, Image, Dimensions, StyleSheet, StatusBar, FlatL
 import { useLib } from "../hooks/useLib"
 import { SetStateAction, useState } from "react";
 import { router } from "expo-router";
+import React from "react";
 
 function ContinueLendo(){
    const [onIndex, setIndex]: [number, React.Dispatch<SetStateAction<number>>] = useState(0);
@@ -39,7 +40,6 @@ function ContinueLendo(){
       })
       return;
    }
-
    return (
       <View className="flex items-center w-full">
          <View className="w-full">
@@ -59,9 +59,9 @@ function ContinueLendo(){
                data={ lib.sendoLidos }
                renderItem={ ({item, index}) => {
                   return <View style={{ 
-                     marginLeft:index == 0? Dimensions.get('window').width/4 : 0,
+                     marginLeft:index == 0? Dimensions.get('window').width/3 : 0,
                      marginRight: index != lib.sendoLidos.length? Dimensions.get('window').width/2 : 0,   
-                     width: Dimensions.get('window').width/2, 
+                     width: Dimensions.get('window').width/3, 
                      aspectRatio: 2/3
                   }}>
                      <Image className="w-full h-full rounded-xl" source={{uri: item.livro.imgUri.replace('http://', 'https://')}} />

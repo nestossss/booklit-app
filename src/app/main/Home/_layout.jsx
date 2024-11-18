@@ -73,7 +73,7 @@ function HomeLayout(){
                >
                   { ({navigation}) => <ContinuarLendoHome navigation={navigation} setFocusHeight={setFocusHeight}/>}
                </Tab.Screen>
-               <Tab.Screen 
+               {/* <Tab.Screen 
                   name='Metas'
                   options={{
                      tabBarIcon: ({focused}) => 
@@ -91,7 +91,7 @@ function HomeLayout(){
                   }}
                >
                   { ({navigation}) => <Metas navigation={navigation} setFocusHeight={setFocusHeight}/>}
-               </Tab.Screen>
+               </Tab.Screen> */}
                <Tab.Screen 
                   name='Streak' 
                   options={{
@@ -110,7 +110,7 @@ function HomeLayout(){
                > 
                   {({navigation}) => <Streak setFocusHeight={setFocusHeight} navigation={navigation}/>}
                </Tab.Screen>
-               <Tab.Screen 
+               {/* <Tab.Screen 
                   name='Estatisticas' 
                   options={{
                      tabBarIcon: ({focused}) => 
@@ -126,7 +126,7 @@ function HomeLayout(){
                   }}
                > 
                   { ({navigation}) => <Estatisticas navigation={navigation} setFocusHeight={setFocusHeight}/>}
-               </Tab.Screen>
+               </Tab.Screen> */}
             </Tab.Navigator>
             <HomePage/>
          </ScrollView>

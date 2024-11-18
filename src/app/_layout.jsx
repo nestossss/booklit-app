@@ -72,6 +72,22 @@ export default function root(){
                         headerShown: false,
                      }}
                   />
+                  <Stack.Screen name="(bookScreens)/NoteScreen"
+                     options={{
+                        animation:'flip',
+                        header: ({ navigation }) => {
+                           return <HeaderDefault hasBackButton router={navigation} text={"Notas"}/>
+                        }
+                     }}
+                  />
+                  <Stack.Screen name="(bookScreens)/NoteEditScreen"
+                     options={{
+                        animation:'flip',
+                        header: ({ navigation }) => {
+                           return <HeaderDefault hasBackButton router={navigation} text={"Notas"}/>
+                        }
+                     }}
+                  />
                </Stack>
             </LibContext.Provider>
          </UserContext.Provider>

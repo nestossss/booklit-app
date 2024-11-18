@@ -1,5 +1,6 @@
 import { Dimensions, Text, View, ViewStyle } from 'react-native'
 import type { StreakDay, StreakMonth } from '../util/types'
+import React from 'react';
 
 function StreakDaily(props: {
    month: StreakMonth
@@ -18,8 +19,7 @@ function StreakDaily(props: {
       }
    }
 
-   if(!weeks) return <></>
-
+   if(!weeks) return <></>;
    return (
       <View style={{width: Dimensions.get('screen').width*11/12-24, height: 160}}>
          { weeks.map( (week) => {

@@ -14,19 +14,17 @@ export default function Salvos(){
     function renderSalvos({item}){
         return <LivroItemCard
             key={"idsalvo:"+item.livro.bookUrl}
-            type="withRecord"
+            type="salvo"
             info={item}
         />
     }
   
     useFocusEffect( useCallback(() => {
         setFocused('Livros Salvos');
-        console.log('olha so ')
     }, [] ) );
     
     return (
         <View className="bg-screen-black" style={styles.screen}>
-            <Text> Livros Salvos </Text>
              <FlatList 
                 data={ lib.salvos }
                 renderItem={ renderSalvos }
@@ -41,7 +39,7 @@ const styles = StyleSheet.create({
        flex: 1,
        justifyContent: "center",
        alignItems: "center",
-       paddingVertical: 60,
+       paddingVertical: 10
    },
    text: {
         width:'100%',

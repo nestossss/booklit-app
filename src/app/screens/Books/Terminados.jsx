@@ -1,8 +1,9 @@
-import { StyleSheet, View, Text, Image } from "react-native";
+import { StyleSheet, View, Text, Image, FlatList, Dimensions, ScrollView } from "react-native";
 import { RouteFocusContext } from "../../../contexts/RouteFocusContext";
 import { useCallback, useContext } from "react";
 import { Link, useFocusEffect } from "expo-router";
 import { useLib } from "../../../hooks/useLib";
+import { LivroItemCard } from "../../../components/LivroItemCard";
 export default function Terminados(){
 
     const [titleFocused, setFocused] = useContext(RouteFocusContext);
@@ -12,31 +13,36 @@ export default function Terminados(){
         setFocused('Terminados');
     }, [] ) );
 
+    function renderTerminados({item}){
+        return <LivroItemCard
+            key={"idsalvo:"+item.livro.bookUrl}
+            type="salvo"
+            info={item}
+        />
+    }
     if(lib.terminados && lib.terminados.length > 0)
-    return (
-        <View className="bg-screen-black" style={styles.screen}>
-            {lib.terminados.length > 0? lib.terminados.map( (item) => {
-                return <Link key={item.livro.bookUrl} asChild href={'/InfoLivro?googleId='+item.livro.bookUrl}>
-                    <View style={styles.book}> 
-                        <Image style={styles.bookImg} source={{ uri: item.livro.imgUri.replace('http://', 'https://')}}/>
-                    </View>
-                </Link>
-            }): <Text>Nenhum livro terminado</Text>}
-        </View>
+        return (
+            <ScrollView className="bg-screen-black" contentContainerStyle={styles.screen}>
+                { lib.terminados.map( item => {
+                    return <LivroItemCard info={item} type="terminado"/>
+                })
+                }
+            </ScrollView>
     )
-    return <Text> Vazio</Text>
+    return <View className="bg-screen-black flex-1 justify-center">
+        <Text className="text-white text-center font-semibold text-lg">Nenhum livro terminado.</Text>
+    </View>
 }
+
 const styles = StyleSheet.create({
    screen: {
-       flex: 1,
-       justifyContent: "center",
-       alignItems: "center",
-       paddingVertical: 60,
-   },
-   book: {
-    width: '33.33%',
-    aspectRatio: 2/3,
-   },
+        flex: 1,
+        flexDirection: 'row',
+        width: Dimensions.get('window').width,
+        gap: Dimensions.get('window').width*0.03,
+        paddingHorizontal: Dimensions.get('window').width*0.02,
+        paddingVertical: Dimensions.get('window').width*0.03
+    },
    text: {
         width:'100%',
         textAlign: "center", 

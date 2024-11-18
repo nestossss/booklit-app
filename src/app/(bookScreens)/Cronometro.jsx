@@ -1,13 +1,23 @@
 import { Link, router, useLocalSearchParams } from "expo-router";
 import { useContext, useEffect, useRef, useState } from "react";
 import { View, Text, Image, TouchableOpacity, StyleSheet, Dimensions, StatusBar, Animated} from "react-native";
-
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 import { UserContext } from "../../contexts/UserContext";
 import { LoadingScreen } from "../../components/LoadingScreen";
 import { useLib } from "../../hooks/useLib";
+
+function searchRecord(lib, bookUrl){
+   if(!bookUrl) return null
+   for(let i = 0; i < Object.keys(lib).length; i++){
+      const records = lib[Object.keys(lib)[i]];
+      const found = records.find(record => record.livro.bookUrl == bookUrl);
+      if(found) console.log(found)
+      if(found) return found;
+   }
+   return null;
+ };
 
 function Cronometro(){
    let { 
@@ -33,6 +43,8 @@ function Cronometro(){
    const [totalPag, setTotalPag] = useState(0);
    const [pagLidas, setPagLidas] = useState(0);
 
+   const [recordExists, setRecordExists] = useState();
+
    useEffect( () => {
       setTotalPag(Number(totalPagParams));
       setPagLidas(Number(pagLidasParams));
@@ -41,6 +53,7 @@ function Cronometro(){
       setHours(Math.floor(Number(tempoLidoParams) / 3600000));
 
    }, []);
+
    function handlePause() {
       let currentIsPaused = !isPaused;
       setIsPaused(!isPaused);
@@ -60,6 +73,12 @@ function Cronometro(){
          clearInterval(intervalId.current);
       }
     }
+
+    useEffect( () => {
+      let record = searchRecord(lib, googleId);
+      if(!record) return setRecordExists(false);
+      return setRecordExists(true);
+    }, [])
 
    return (
       <View style={[styles.container, { backgroundColor: isPaused? '#111111': '#47A538'  }]}>
@@ -168,6 +187,23 @@ function Cronometro(){
                      {pagLidas}/{totalPag}
                   </Text>
                </View>
+               
+               <Link 
+                  href={{
+                     pathname: "/NoteEditScreen",
+                     params: {                 
+                        googleId,    
+                     }  
+               }}
+                  asChild
+                  disabled={!recordExists}
+               >
+                  <TouchableOpacity>
+                     <View className={"w-12 h-12 absolute bottom-1 right-1 justify-center items-center rounded-full "+ (isPaused? "bg-main-green":"bg-[#068e2c]")}>
+                        <Image className="w-[25] h-[29]" source={require('../../../assets/icons/note-icon.png')}/>
+                     </View>
+                  </TouchableOpacity>
+               </Link>
             </View>
          </View>
       </View>

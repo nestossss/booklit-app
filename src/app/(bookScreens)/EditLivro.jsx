@@ -87,7 +87,7 @@ export default function EditLivro(){
          if(convertedPagLidas > 0){
             setBookStatus('Sendo lido');
          }
-         return setPagLidas(convertedPagLidas)
+         return setPagLidas(convertedPagLidas);
       } 
       setBookStatus('Salvo')
       return setPagLidas(0)
@@ -118,7 +118,7 @@ export default function EditLivro(){
       console.log('tempoLido: ', tempoLido, "paginas: ", pagLidas)
       res = await api.put('/lib/atualizar?id='+idlivro, body, { headers }).catch( (err) => { console.log("handle salvar 3"); console.log(err)} )
       if(res?.data?.status != 200) return console.log('erro ao salvar 2');
-      setChangesMade(true);
+      if(res.data.status === 200) await setChangesMade(true);
       return router.navigate({
             pathname: '/ViewSavedBook',
             params: {
