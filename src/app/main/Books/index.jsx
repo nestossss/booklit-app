@@ -79,11 +79,11 @@ function BooksScreens(){
                      tabBarIcon: ({focused}) => 
                         focused? 
                         <View style={styles.iconContainerFocused}>
-                           <Image source={require('../../../../assets/icons/book-open-green.png' )} style={styles.customIcon}/>
+                           <Image source={require('../../../../assets/icons/terminado-icon.png' )} style={[styles.customIcon, {width: 15, height: 18}]}/>
                         </View>
                      :
                         <View style={styles.iconContainer}>
-                           <Image source={require('../../../../assets/icons/book-open-white.png' )} style={styles.customIcon}/>
+                           <Image source={require('../../../../assets/icons/terminado-icon-white.png' )} style={[styles.customIcon,{width: 15, height: 18}]}/>
                         </View>,
 
                   }}/>
@@ -95,11 +95,11 @@ function BooksScreens(){
                      tabBarIcon: ({focused}) => 
                         focused? 
                         <View style={styles.iconContainerFocused}>
-                           <Image source={require('../../../../assets/icons/book-open-green.png' )} style={styles.customIcon}/>
+                           <Image source={require('../../../../assets/icons/salvo-icon-green.png' )} style={[styles.customIcon, {width: 14, height: 18}]}/>
                         </View>
                      :
                         <View style={styles.iconContainer}>
-                           <Image source={require('../../../../assets/icons/book-open-white.png' )} style={styles.customIcon}/>
+                           <Image source={require('../../../../assets/icons/salvo-icon-white.png' )} style={[styles.customIcon, {width: 14, height: 18}]}/>
                         </View>,
                   }}
                />

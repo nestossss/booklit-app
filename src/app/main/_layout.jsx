@@ -10,6 +10,7 @@ import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
 import { HeaderHome } from '../../components/HeaderHome';
 import { HeaderDefault } from '../../components/HeaderDefault';
+import { View } from 'react-native';
 
 export default function MainLayout(){
 
@@ -58,8 +59,9 @@ export default function MainLayout(){
          <Tabs.Screen
             name="User"
             options={{ 
+               
                header: ({ navigation }) => {
-                  return <HeaderDefault router={navigation} text={`Olá, ${userInfo.username}!`}/>
+                  return  <HeaderDefault router={navigation} text={`Olá, ${userInfo.username}!`}/>
                },
                tabBarIcon: ({focused}) => <FontAwesome5 name={focused? "user-alt":'user'} size={24} color="#47A538" />,
                tabBarLabel: 'Usuário',

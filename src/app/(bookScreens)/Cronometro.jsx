@@ -178,7 +178,7 @@ function Cronometro(){
                      numberOfLines={1}
                      style={[styles.overviewAuthors,  {color: isPaused? '#939393': '#235838'  }]}
                   >
-                     {authors.toString().toUpperCase()}
+                     {authors?.toString().toUpperCase()}
                   </Text>
                   <Text
                      numberOfLines={1}

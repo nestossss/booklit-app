@@ -12,16 +12,18 @@ import Streak from '../../screens/Home/Streak';
 import FontAwesome5  from '@expo/vector-icons/FontAwesome5';
 import { useEffect, useState } from 'react';
 import { HeaderHome } from '../../../components/HeaderHome';
+import { HeaderDefault } from '../../../components/HeaderDefault';
+import { useSession } from '../../../hooks/useSession';
 
 const Tab = createMaterialTopTabNavigator();
 
 function HomeLayout(){
    const [focusHeight, setFocusHeight] = useState();
-
+   const [session] = useSession();
    return (
       <View>
          <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollView}>
-            <HeaderHome />
+            <HeaderDefault text={"Olá, "+session.username} />
             <Tab.Navigator
                initialRouteName='ContinuarLendo'
                screenOptions={{
@@ -32,6 +34,7 @@ function HomeLayout(){
                   swipeEnabled: false,
                   tabBarStyle: {
                      backgroundColor: '#47A538',
+                     display: 'none'
                   },
                   tabBarItemStyle: {
                      flex: 1,
@@ -92,7 +95,7 @@ function HomeLayout(){
                >
                   { ({navigation}) => <Metas navigation={navigation} setFocusHeight={setFocusHeight}/>}
                </Tab.Screen> */}
-               <Tab.Screen 
+               {/* <Tab.Screen 
                   name='Streak' 
                   options={{
                      tabBarIcon: ({focused}) => 
@@ -109,7 +112,7 @@ function HomeLayout(){
                   }}
                > 
                   {({navigation}) => <Streak setFocusHeight={setFocusHeight} navigation={navigation}/>}
-               </Tab.Screen>
+               </Tab.Screen> */}
                {/* <Tab.Screen 
                   name='Estatisticas' 
                   options={{

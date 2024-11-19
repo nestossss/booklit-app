@@ -11,8 +11,7 @@ export default function ContinuarLendoHome({navigation, setFocusHeight}){
 
     useEffect( () => {
         const adjustHeight = navigation.addListener('focus', (e) => {
-            setFocusHeight(650);
-            // startAnim();
+            setFocusHeight(620);
         })
 
         return adjustHeight

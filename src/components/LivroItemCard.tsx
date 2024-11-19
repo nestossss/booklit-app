@@ -96,7 +96,7 @@ export function LivroItemCard({info, type}: {
             <View style={{width: "70%"}} className="pl-5 gap-y-3 justify-between">
                <View className="justify-between">
                   <Text className="text-base font-semibold pb-2 text-white w-full" numberOfLines={3}>{info.livro.titulo} - {info.livro.autores}</Text>
-                  <Text className="text-zinc-500 font-semibold w-full">{info.livro.totalPag} Páginas totais</Text>
+                  <Text className="text-zinc-500 font-semibold w-full">{info.livro.totalPag} </Text>
                </View>
                <Link href={{
                   pathname: "/Cronometro",

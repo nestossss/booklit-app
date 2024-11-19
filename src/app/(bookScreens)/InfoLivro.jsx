@@ -198,7 +198,7 @@ export default function InfoLivro(){
                      }}
                      >
                      <Text numberOfLines={1} style={[styles.transparentBtnText]}>
-                        { isLivroSalvo? "Livro salvo XD" : "Salvar"}
+                        { isLivroSalvo? "Livro salvo" : "Salvar"}
                      </Text> 
                   </TouchableHighlight >
                   <TouchableHighlight 

@@ -21,8 +21,8 @@ export default function ViewSavedBook(){
 
    const [lib] = useLib();
    const [book, setBook] = useState(null);
-   const [paginasLidas, setPaginasLidas] = useState();
-   const [tempoLido, setTempoLido] = useState();
+   const [paginasLidas, setPaginasLidas] = useState(0);
+   const [tempoLido, setTempoLido] = useState(0);
    const [notas, setNotas] = useState([]);
 
    
@@ -75,8 +75,8 @@ export default function ViewSavedBook(){
             'googleId': googleId,
             'title':book.title, 
             'authors': book.authors,
-            'totalPag': book.pageCount,
-            'pagLidas': paginasLidas,
+            'totalPagParams': book.pageCount,
+            'pagLidasParams': paginasLidas,
             'tempoLidoParams': tempoLido,
             'imgUri': (book?.imageLinks?.medium?
             book.imageLinks.medium : book?.imageLinks?.large?
@@ -122,7 +122,7 @@ export default function ViewSavedBook(){
                />
             </View>
             <View style={styles.textInfoContainer}>
-               <Text style={styles.textInfo}numberOfLines={2}>{book.authors.toString()}</Text>
+               <Text style={styles.textInfo}numberOfLines={2}>{book?.authors?.toString()}</Text>
                <Text style={styles.textInfo} numberOfLines={1}>{paginasLidas}/{book.pageCount}</Text>
                <Text style={styles.textInfo} numberOfLines={1}>
                   {Math.floor(tempoLido/3600000)}
