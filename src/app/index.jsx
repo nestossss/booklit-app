@@ -10,6 +10,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LoadingScreen } from '../components/LoadingScreen';
 import { OpenSans_400Regular, OpenSans_500Medium, OpenSans_600SemiBold, OpenSans_700Bold, OpenSans_800ExtraBold, useFonts } from "@expo-google-fonts/open-sans";
 import { Nunito_700Bold } from '@expo-google-fonts/nunito';
+import api from '../api/api';
 
 const index = () => {
 
@@ -36,9 +37,16 @@ const index = () => {
         let userDataString = await AsyncStorage.getItem('booklit-auth');
         if(userDataString == null) return setLoggedIn(false);
         let userData = JSON.parse(userDataString);
-        setUserInfo(userData);
-        setLoggedIn(true);
+        let res = await api.post("/auth/checkUser", {"username": userData.username });
+        if(res?.data?.cadastrado){
+            setUserInfo(userData);
+            return setLoggedIn(true);
+        }
+        return setLoggedIn(false)
     }
+
+    if(!fontsLoaded && isLoggedIn == undefined) SplashScreen.preventAutoHideAsync();
+    if(fontsLoaded && isLoggedIn != undefined) SplashScreen.hideAsync();
 
     return (
         <>
