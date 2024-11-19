@@ -75,7 +75,6 @@ export default function InfoLivro(){
 
 
    async function adicionar(signal) {
-      if(livroId == null) return;
       let body = {
          'bookUrl': googleId,
       };
@@ -115,7 +114,7 @@ export default function InfoLivro(){
          if(isLivroSalvo) adicionar(signal);
          if(!isLivroSalvo) deletar(signal);
       }
-      
+
       return () => {
          controller.abort();
       }
@@ -194,7 +193,7 @@ export default function InfoLivro(){
                      activeOpacity={0.5}
                      style={[styles.transparentBtn, pressBorderColor]}
                      onPress={ () => { 
-                        handlePressSalvar()
+                        return handlePressSalvar()
                      }}
                      >
                      <Text numberOfLines={1} style={[styles.transparentBtnText]}>
