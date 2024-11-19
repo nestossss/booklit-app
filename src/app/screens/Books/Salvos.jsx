@@ -1,4 +1,4 @@
-import { StyleSheet, View, Text, FlatList} from "react-native";
+import { StyleSheet, View, Text, FlatList, ScrollView, Dimensions} from "react-native";
 import { RouteFocusContext } from "../../../contexts/RouteFocusContext";
 import { useCallback, useContext, useEffect} from "react";
 import { useFocusEffect } from "expo-router";
@@ -23,24 +23,28 @@ export default function Salvos(){
         setFocused('Livros Salvos');
     }, [] ) );
     
-    return (
-        <View className="bg-screen-black" style={styles.screen}>
-             <FlatList 
-                data={ lib.salvos }
-                renderItem={ renderSalvos }
-                keyExtractor={item => item.idlivro}
-            />
-        </View>
+    if(lib.salvos && lib.salvos.length > 0)
+        return (
+            <ScrollView className="bg-screen-black" contentContainerStyle={styles.screen}>
+                { lib.salvos.map( item => {
+                    return <LivroItemCard info={item} type="salvo"/>
+                })
+                }
+            </ScrollView>
     )
+    return <View className="bg-screen-black flex-1 justify-center">
+        <Text className="text-white text-center font-semibold text-lg">Nenhum livro salvo.</Text>
+    </View>
 }
 
 const styles = StyleSheet.create({
-   screen: {
-       flex: 1,
-       justifyContent: "center",
-       alignItems: "center",
-       paddingVertical: 10
-   },
+    screen: {
+        flexGrow: 1,
+        width: Dimensions.get('window').width,
+        gap: Dimensions.get('window').width*0.03,
+        paddingHorizontal: Dimensions.get('window').width*0.02,
+        paddingVertical: Dimensions.get('window').width*0.03
+    },
    text: {
         width:'100%',
         textAlign: "center", 

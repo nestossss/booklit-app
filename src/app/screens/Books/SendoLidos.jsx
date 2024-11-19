@@ -1,4 +1,4 @@
-import { StyleSheet, View, Text, FlatList } from "react-native";
+import { StyleSheet, View, Text, FlatList, ScrollView, Dimensions } from "react-native";
 import { RouteFocusContext } from "../../../contexts/RouteFocusContext";
 import { useCallback, useContext } from "react";
 import { useFocusEffect } from "expo-router";
@@ -21,17 +21,15 @@ export default function SendoLidos(){
         />
     }
 
-    if(lib?.sendoLidos?.length > 0){
+    if(lib.sendoLidos && lib.sendoLidos.length > 0)
         return (
-        <View className="bg-screen-black" style={styles.screen}>
-             <FlatList 
-                data={ lib.sendoLidos }
-                renderItem={ renderSendoLidos }
-                keyExtractor={item => item.idlivro}
-            />
-        </View>
-        )
-    }
+            <ScrollView className="bg-screen-black" contentContainerStyle={styles.screen}>
+                { lib.sendoLidos.map( item => {
+                    return <LivroItemCard info={item} type="salvo"/>
+                })
+                }
+            </ScrollView>
+    )
     return <View className="bg-screen-black flex-1 justify-center">
         <Text className="text-white text-center font-semibold text-lg">Nenhum livro sendo lido.</Text>
     </View>
@@ -39,10 +37,11 @@ export default function SendoLidos(){
 }
 const styles = StyleSheet.create({
     screen: {
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-        paddingVertical: 10
+        flexGrow: 1,
+        width: Dimensions.get('window').width,
+        gap: Dimensions.get('window').width*0.03,
+        paddingHorizontal: Dimensions.get('window').width*0.02,
+        paddingVertical: Dimensions.get('window').width*0.03
     },
    text: {
         width:'100%',
