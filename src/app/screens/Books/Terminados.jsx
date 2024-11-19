@@ -13,7 +13,13 @@ export default function Terminados(){
         setFocused('Terminados');
     }, [] ) );
 
-   
+    function renderTerminados({item}){
+        return <LivroItemCard
+            key={"idsalvo:"+item.livro.bookUrl}
+            type="salvo"
+            info={item}
+        />
+    }
     if(lib.terminados && lib.terminados.length > 0)
         return (
             <ScrollView className="bg-screen-black" contentContainerStyle={styles.screen}>
