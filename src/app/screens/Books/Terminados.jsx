@@ -18,7 +18,7 @@ export default function Terminados(){
         return (
             <ScrollView className="bg-screen-black" contentContainerStyle={styles.screen}>
                 { lib.terminados.map( item => {
-                    return <LivroItemCard info={item} type="terminado"/>
+                    return <LivroItemCard key={"idterminado:"+item.livro.idlivro.toString()} info={item} type="terminado"/>
                 })
                 }
             </ScrollView>

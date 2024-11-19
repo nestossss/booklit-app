@@ -25,7 +25,7 @@ export default function SendoLidos(){
         return (
             <ScrollView className="bg-screen-black" contentContainerStyle={styles.screen}>
                 { lib.sendoLidos.map( item => {
-                    return <LivroItemCard info={item} type="salvo"/>
+                    return <LivroItemCard key={"idsendolido:"+item.livro.idlivro.toString()} info={item} type="salvo"/>
                 })
                 }
             </ScrollView>

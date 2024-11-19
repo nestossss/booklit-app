@@ -27,7 +27,7 @@ export default function Salvos(){
         return (
             <ScrollView className="bg-screen-black" contentContainerStyle={styles.screen}>
                 { lib.salvos.map( item => {
-                    return <LivroItemCard info={item} type="salvo"/>
+                    return <LivroItemCard key={"idsalvo:"+item.livro.idlivro.toString()} info={item} type="salvo"/>
                 })
                 }
             </ScrollView>
