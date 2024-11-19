@@ -41,7 +41,7 @@ const Estatisticas = ({ lib }: { lib: Library }) => {
     <ScrollView style={styles.tabContent}>
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Gêneros</Text>
-        <Text style={styles.sectionSubtitle}>Seu gênero mais lido é {genres[0]?.name}, já aparecem em {genres[0]?.count} dos seus livros</Text>
+        <Text style={styles.sectionSubtitle}>Seu gênero mais lido é {genres[0]?.name}, já apareceu em {genres[0]?.count} dos seus livros</Text>
         {genres.map((genre, index) => (
           <View key={index} style={styles.genreItem}>
             <View style={styles.genreHeader}>
